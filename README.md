@@ -1,6 +1,24 @@
-# 🌾 Farming Advisory System - Dataset Analysis & Implementation Guide
+# 🌾 AI-Powered Farming Advisory System
 
-> **Complete analysis of dataset feasibility for building an AI-powered farming advisory system**
+> **Streamlit web application for data-driven farming decisions**
+
+---
+
+## 🚀 Quick Start
+
+1. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+2. **Launch the App**
+   ```bash
+   streamlit run streamlit_app.py
+   ```
+
+3. **Access Your System**
+   - Local: http://localhost:8501
+   - Network: http://YOUR_IP:8501
 
 ---
 
@@ -18,15 +36,15 @@
 
 ---
 
-## 📁 What You Have
+## 📊 Dataset Overview
 
-### ✅ Core Datasets (Ready to Use)
+**Your data advantage:** 24 years of comprehensive agricultural records
 
-| File | Records | Columns | Coverage | Quality |
-|------|---------|---------|----------|---------|
-| `crop_yield.csv` | 19,689 | 9 | 55 crops, 30 states, 1997-2020 | ⭐⭐⭐⭐⭐ |
-| `state_soil_data.csv` | 30 | 5 | 30 states (N,P,K,pH) | ⭐⭐⭐⭐⭐ |
-| `state_weather_data_1997_2020.csv` | 720 | 5 | 30 states, 24 years | ⭐⭐⭐⭐⭐ |
+| Dataset | Records | Coverage | Quality |
+|---------|---------|----------|---------|
+| `crop_yield.csv` | 19,689 | 55 crops, 30 states, 1997-2020 | ⭐⭐⭐⭐⭐ |
+| `state_soil_data.csv` | 30 | 30 states (N,P,K,pH) | ⭐⭐⭐⭐⭐ |
+| `state_weather_data_1997_2020.csv` | 720 | 30 states, 24 years | ⭐⭐⭐⭐⭐ |
 
 ### ✅ Generated/Extracted Datasets
 
