@@ -1,11 +1,4 @@
-"""
-Quick Dataset Overview Script
-
-Run this to see what you have and what you can build.
-"""
-
-import pandas as pd
-import os
+DELETE_THIS_FILE
 
 def main():
     print("\n" + "="*80)

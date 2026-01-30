@@ -1,33 +1,64 @@
-# 🌾 Farming Advisory System - Dataset Analysis & Implementation Guide
+# 🌾 AI-Powered Farming Advisory System
 
-> **Complete analysis of dataset feasibility for building an AI-powered farming advisory system**
-
----
-
-## 📊 Quick Summary
-
-**Your datasets are EXCELLENT and sufficient for MVP development!**
-
-- ✅ **6/9 features** can be built immediately with existing data
-- ✅ **0% missing values** - perfect data quality
-- ✅ **20,439 records** spanning 24 years, 55 crops, 30 states
-- 🟡 **3/9 features** need additional datasets (available within 1-2 weeks)
-
-**Verdict:** Start building TODAY. You have everything needed for a working demo.
+> **Streamlit web application for data-driven farming decisions**
 
 ---
 
-## 📁 What You Have
+## 🚀 Quick Start
 
-### ✅ Core Datasets (Ready to Use)
+1. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-| File | Records | Columns | Coverage | Quality |
-|------|---------|---------|----------|---------|
-| `crop_yield.csv` | 19,689 | 9 | 55 crops, 30 states, 1997-2020 | ⭐⭐⭐⭐⭐ |
-| `state_soil_data.csv` | 30 | 5 | 30 states (N,P,K,pH) | ⭐⭐⭐⭐⭐ |
-| `state_weather_data_1997_2020.csv` | 720 | 5 | 30 states, 24 years | ⭐⭐⭐⭐⭐ |
+2. **Launch the App**
+   ```bash
+   streamlit run streamlit_app.py
+   ```
 
-### ✅ Generated Datasets (For Demo/Testing)
+3. **Access Your System**
+   - Local: http://localhost:8501
+   - Network: http://YOUR_IP:8501
+
+---
+
+## ✨ Features
+
+### 📊 **Yield Gap Analysis**
+Compare your farm performance with top regional performers:
+- Performance benchmarking against 75th/90th percentiles
+- Improvement roadmap with realistic targets
+- Factor analysis for optimization opportunities
+
+### 🎯 **Multi-Scenario Predictor** 
+Explore different farming strategies:
+- Conservative, Moderate, Aggressive scenarios
+- Risk vs Reward analysis
+- Profit optimization recommendations
+- What-if scenario modeling
+
+### 🧠 **Smart Yield Prediction**
+AI-powered forecasting with explanations:
+- Machine learning predictions
+- Visual explanations of key factors
+- Confidence intervals and risk assessment
+- Historical context and benchmarking
+
+---
+
+## 📊 Dataset Overview
+
+**Your data advantage:** 24 years of comprehensive agricultural records
+
+| Dataset | Records | Coverage | Quality |
+|---------|---------|----------|---------|
+| `crop_yield.csv` | 19,689 | 55 crops, 30 states, 1997-2020 | ⭐⭐⭐⭐⭐ |
+| `state_soil_data.csv` | 30 | 30 states (N,P,K,pH) | ⭐⭐⭐⭐⭐ |
+| `state_weather_data_1997_2020.csv` | 720 | 30 states, 24 years | ⭐⭐⭐⭐⭐ |
+
+**Data Quality:** 0% missing values - perfect for ML training
+
+---
 
 | File | Records | Purpose | Status |
 |------|---------|---------|--------|
