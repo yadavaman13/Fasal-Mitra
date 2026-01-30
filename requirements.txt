@@ -12,8 +12,17 @@ matplotlib>=3.7.0
 seaborn>=0.12.0
 plotly>=5.17.0
 
-# Image Processing
-Pillow>=9.0.0
+# Image Processing (for disease detection)
+Pillow>=10.0.0
+
+# HTTP Requests (for potential API integrations)
+requests>=2.31.0
+
+# File I/O and Path handling
+pathlib2>=2.3.0
+
+# JSON handling (for configuration files)
+jsonschema>=4.17.0
 
 # PDF Processing
 pdfplumber>=0.11.0
@@ -21,3 +30,7 @@ PyPDF2>=3.0.0
 
 # Excel Support
 openpyxl>=3.1.0
+
+# Additional utilities
+python-dateutil>=2.8.0
+six>=1.16.0
