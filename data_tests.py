@@ -1,12 +1,4 @@
-import os
-import sys
-import pandas as pd
-
-FILES = [
-    "crop_yield.csv",
-    "state_soil_data.csv",
-    "state_weather_data_1997_2020.csv",
-]
+DELETE_THIS_FILE
 
 def detect_datetime_series(s):
     # try to coerce to datetime and see fraction parsed
