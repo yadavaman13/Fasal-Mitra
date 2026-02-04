@@ -2,6 +2,7 @@ import React from 'react';
 import { Sprout, Beaker, Bug, TrendingUp } from 'lucide-react';
 import FeatureCard from '../components/FeatureCard';
 import WeatherWidget from '../components/WeatherWidget';
+import ChatbotWidget from '../components/ChatbotWidget';
 import '../styles/dashboard.css';
 
 const Dashboard = () => {
@@ -84,6 +85,9 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Chatbot Widget */}
+            <ChatbotWidget />
         </div>
     );
 };
