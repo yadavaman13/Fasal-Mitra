@@ -22,6 +22,87 @@ const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY || '';
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
 const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 
+// Cache configuration
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutes in milliseconds
+const CACHE_KEY_CURRENT = 'fasalmitra_weather_current';
+const CACHE_KEY_FORECAST = 'fasalmitra_weather_forecast';
+const CACHE_KEY_TIMESTAMP = 'fasalmitra_weather_timestamp';
+
+/**
+ * Check if cached data is still valid
+ * @returns {boolean} True if cache is fresh (< 30 minutes old)
+ */
+const isCacheValid = () => {
+    const timestamp = localStorage.getItem(CACHE_KEY_TIMESTAMP);
+    if (!timestamp) return false;
+    
+    const age = Date.now() - parseInt(timestamp);
+    return age < CACHE_DURATION;
+};
+
+/**
+ * Get cached weather data if available and fresh
+ * @returns {Object|null} Cached weather data or null
+ */
+export const getCachedWeather = () => {
+    if (!isCacheValid()) return null;
+    
+    try {
+        const current = localStorage.getItem(CACHE_KEY_CURRENT);
+        const forecast = localStorage.getItem(CACHE_KEY_FORECAST);
+        const timestamp = localStorage.getItem(CACHE_KEY_TIMESTAMP);
+        
+        if (current && forecast) {
+            return {
+                current: JSON.parse(current),
+                forecast: JSON.parse(forecast),
+                timestamp: parseInt(timestamp)
+            };
+        }
+    } catch (error) {
+        console.error('Error reading cache:', error);
+    }
+    
+    return null;
+};
+
+/**
+ * Store weather data in cache with timestamp
+ * @param {Object} current - Current weather data
+ * @param {Array} forecast - Weekly forecast data
+ */
+export const setCachedWeather = (current, forecast) => {
+    try {
+        const timestamp = Date.now();
+        localStorage.setItem(CACHE_KEY_CURRENT, JSON.stringify(current));
+        localStorage.setItem(CACHE_KEY_FORECAST, JSON.stringify(forecast));
+        localStorage.setItem(CACHE_KEY_TIMESTAMP, timestamp.toString());
+    } catch (error) {
+        console.error('Error setting cache:', error);
+    }
+};
+
+/**
+ * Clear all cached weather data
+ */
+export const clearWeatherCache = () => {
+    localStorage.removeItem(CACHE_KEY_CURRENT);
+    localStorage.removeItem(CACHE_KEY_FORECAST);
+    localStorage.removeItem(CACHE_KEY_TIMESTAMP);
+};
+
+/**
+ * Get cache age in minutes
+ * @returns {number|null} Age in minutes or null if no cache
+ */
+export const getCacheAge = () => {
+    const timestamp = localStorage.getItem(CACHE_KEY_TIMESTAMP);
+    if (!timestamp) return null;
+    
+    const age = Date.now() - parseInt(timestamp);
+    return Math.floor(age / 60000); // Convert to minutes
+};
+
 /**
  * Get current weather for a location
  * @param {string} city - City name (e.g., "Ahmedabad")
