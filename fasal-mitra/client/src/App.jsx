@@ -4,6 +4,7 @@ import { Beaker, Bug, TrendingUp } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import YieldPrediction from './pages/YieldPrediction';
+import DiseaseDetection from './pages/DiseaseDetection';
 import './styles/pages.css';
 
 const App = () => {
@@ -14,10 +15,10 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/yield-prediction" element={<YieldPrediction />} />
+          <Route path="/disease-detection" element={<DiseaseDetection />} />
           
           {/* Placeholder routes - will create pages later */}
           <Route path="/soil-analysis" element={<ComingSoon title="Soil Analysis" icon={Beaker} />} />
-          <Route path="/disease-detection" element={<ComingSoon title="Disease Detection" icon={Bug} />} />
           <Route path="/gap-analysis" element={<ComingSoon title="Gap Analysis" icon={TrendingUp} />} />
         </Routes>
       </div>
