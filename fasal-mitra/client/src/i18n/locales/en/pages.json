@@ -1,0 +1,66 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Your farming command center",
+    "hero": {
+      "title": "Smart Farming Made Simple",
+      "subtitle": "Get AI-powered insights for better crop management and higher yields"
+    },
+    "features": {
+      "title": "Features",
+      "yieldPrediction": {
+        "title": "Yield Prediction",
+        "description": "Predict your crop yield using ML models"
+      },
+      "diseaseDetection": {
+        "title": "Disease Detection",
+        "description": "Identify crop diseases from photos"
+      },
+      "weatherForecast": {
+        "title": "Weather Forecast",
+        "description": "Get accurate weather predictions"
+      },
+      "soilAnalysis": {
+        "title": "Soil Analysis",
+        "description": "Analyze soil health and nutrients"
+      },
+      "gapAnalysis": {
+        "title": "Gap Analysis",
+        "description": "Find yield improvement opportunities"
+      },
+      "chatbot": {
+        "title": "AI Assistant",
+        "description": "Chat with our farming expert AI"
+      }
+    }
+  },
+  "yieldPrediction": {
+    "title": "Yield Prediction",
+    "subtitle": "Predict your crop yield based on farming inputs",
+    "comingSoon": "This feature will be implemented next"
+  },
+  "weather": {
+    "title": "Weather Forecast",
+    "subtitle": "Get accurate weather predictions for your location",
+    "comingSoon": "This feature will be implemented soon"
+  },
+  "soilAnalysis": {
+    "title": "Soil Analysis",
+    "subtitle": "Analyze soil health and get nutrient recommendations",
+    "comingSoon": "This feature will be implemented soon"
+  },
+  "gapAnalysis": {
+    "title": "Gap Analysis",
+    "subtitle": "Identify opportunities to improve your crop yield",
+    "comingSoon": "This feature will be implemented soon"
+  },
+  "chatbot": {
+    "title": "AI Assistant",
+    "subtitle": "Chat with our AI-powered farming expert",
+    "comingSoon": "This feature will be implemented soon"
+  },
+  "common": {
+    "comingSoonTitle": "Coming Soon",
+    "comingSoonMessage": "This feature will be implemented soon"
+  }
+}
