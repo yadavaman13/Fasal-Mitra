@@ -41,9 +41,10 @@ class ChatbotService:
         if GEMINI_AVAILABLE and settings.GEMINI_API_KEY:
             try:
                 genai.configure(api_key=settings.GEMINI_API_KEY)
-                self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
+                # Using Gemini Flash Latest (best balance of speed and quota)
+                self.model = genai.GenerativeModel('gemini-flash-latest')
                 self.enabled = True
-                logger.info("✅ Gemini API configured successfully")
+                logger.info("✅ Gemini API configured successfully with gemini-flash-latest")
             except Exception as e:
                 logger.error(f"Error configuring Gemini API: {str(e)}")
                 self.enabled = False
@@ -126,14 +127,36 @@ class ChatbotService:
             "enabled": self.enabled,
             "gemini_available": GEMINI_AVAILABLE,
             "api_key_configured": bool(settings.GEMINI_API_KEY),
-            "model": "gemini-2.0-flash-exp" if self.enabled else None,
+            "model": "gemini-flash-latest" if self.enabled else None,
             "status": "operational" if self.enabled else "fallback_mode"
         }
     
     def _create_question_prompt(self, request: ChatbotQueryRequest) -> str:
         """Create context-aware prompt for questions"""
-        prompt = f"""You are an expert agricultural advisor helping Indian farmers. 
         
+        # Language-specific instructions
+        language_map = {
+            'hi': 'Hindi (हिंदी)',
+            'en': 'English',
+            'ta': 'Tamil (தமிழ்)',
+            'te': 'Telugu (తెలుగు)',
+            'mr': 'Marathi (मराठी)',
+            'bn': 'Bengali (বাংলা)',
+            'gu': 'Gujarati (ગુજરાતી)',
+            'kn': 'Kannada (ಕನ್ನಡ)',
+            'ml': 'Malayalam (മലയാളം)',
+            'pa': 'Punjabi (ਪੰਜਾਬੀ)'
+        }
+        
+        language_name = language_map.get(request.language, 'English')
+        
+        prompt = f"""You are an expert agricultural advisor helping Indian farmers.
+
+IMPORTANT LANGUAGE INSTRUCTION: 
+- The user asked their question in {language_name}
+- You MUST respond in {language_name} language
+- Use simple, easy-to-understand words suitable for farmers
+
 Question: {request.question}
 
 Context: {request.context or 'General farming inquiry'}
@@ -144,8 +167,9 @@ Please provide a helpful, practical answer that:
 3. Includes actionable advice
 4. Mentions approximate costs in INR if relevant
 5. Considers local climate and soil conditions
+6. Responds in {language_name} language
 
-Answer in {request.language} language if not English.
+Format your response clearly with proper structure (use bullet points, numbers, bold text for emphasis).
 """
         return prompt
     

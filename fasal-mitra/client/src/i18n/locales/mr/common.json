@@ -1,0 +1,13 @@
+{
+  "loading": "लोड होत आहे...",
+  "error": "त्रुटी",
+  "retry": "पुन्हा प्रयत्न करा",
+  "refresh": "रीफ्रेश करा",
+  "weather": "हवामान",
+  "temperature": "तापमान",
+  "humidity": "आर्द्रता",
+  "wind_speed": "वाऱ्याचा वेग",
+  "air_quality": "हवेची गुणवत्ता",
+  "precipitation": "पर्जन्य",
+  "updated_just_now": "नुकतेच अपडेट केले"
+}

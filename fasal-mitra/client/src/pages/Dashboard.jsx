@@ -1,85 +1,71 @@
 import React from 'react';
-import { Sprout, Cloud, Beaker, Bug, TrendingUp, MessageCircle } from 'lucide-react';
+import { Sprout, Beaker, Bug, TrendingUp } from 'lucide-react';
 import FeatureCard from '../components/FeatureCard';
+import { WeatherDashboard } from '../components/weather';
+import ChatbotWidget from '../components/ChatbotWidget';
 import '../styles/dashboard.css';
 
 const Dashboard = () => {
     const features = [
         {
             icon: Sprout,
-            title: 'Yield Prediction',
-            description: 'Predict crop yield based on your farming inputs using AI-powered ML models with 97.5% accuracy.',
+            title: 'Crop Yield',
+            description: 'Predict how much your crops will produce this season using smart technology.',
             path: '/yield-prediction',
         },
         {
-            icon: Cloud,
-            title: 'Weather Forecast',
-            description: 'Get 7-day weather forecast with farming recommendations and alerts for your location.',
-            path: '/weather',
-        },
-        {
             icon: Beaker,
-            title: 'Soil Analysis',
-            description: 'Check soil suitability for crops and get personalized recommendations based on NPK levels.',
+            title: 'Soil Check',
+            description: 'Test your soil and get recommendations for better crop growth.',
             path: '/soil-analysis',
         },
         {
             icon: Bug,
-            title: 'Disease Detection',
-            description: 'Upload crop images to detect diseases instantly and get treatment plans with cost estimates.',
+            title: 'Disease Help',
+            description: 'Take crop photos to identify diseases and get treatment advice.',
             path: '/disease-detection',
         },
         {
             icon: TrendingUp,
-            title: 'Gap Analysis',
-            description: 'Compare your yield with benchmarks and discover opportunities for improvement.',
+            title: 'Improve Farm',
+            description: 'Compare your farm performance and find ways to grow more.',
             path: '/gap-analysis',
-        },
-        {
-            icon: MessageCircle,
-            title: 'AI Assistant',
-            description: 'Ask farming questions and get expert advice from our AI-powered chatbot assistant.',
-            path: '/chatbot',
         },
     ];
 
     return (
         <div className="dashboard-container">
-            {/* Hero Section */}
-            <div className="dashboard-hero">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-                    <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-                            Welcome to <span style={{ color: '#99BC85' }}>FasalMitra</span>
-                        </h1>
-                        <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-                            Your Smart Farming Assistant providing data-driven insights for better crop management and higher yields
-                        </p>
+            {/* Main Content - Weather + Features */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <div className="dashboard-main-layout">
+                    {/* Left - Weather Section */}
+                    <div className="dashboard-weather-section">
+                        <WeatherDashboard />
                     </div>
-                </div>
-            </div>
+                    
+                    {/* Right - Features Section */}
+                    <div className="dashboard-features-section">
+                        <div className="features-header">
+                            <h2 className="features-title">
+                                Farm Tools
+                            </h2>
+                            <p className="features-subtitle">
+                                Smart tools for better farming
+                            </p>
+                        </div>
 
-            {/* Features Grid */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-                <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                        Explore Features
-                    </h2>
-                    <p className="text-gray-600">
-                        Choose a tool to get started with smart farming decisions
-                    </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {features.map((feature, index) => (
-                        <FeatureCard
-                            key={index}
-                            icon={feature.icon}
-                            title={feature.title}
-                            description={feature.description}
-                            path={feature.path}
-                        />
-                    ))}
+                        <div className="features-grid">
+                            {features.map((feature, index) => (
+                                <FeatureCard
+                                    key={index}
+                                    icon={feature.icon}
+                                    title={feature.title}
+                                    description={feature.description}
+                                    path={feature.path}
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -106,6 +92,9 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Chatbot Widget */}
+            <ChatbotWidget />
         </div>
     );
 };

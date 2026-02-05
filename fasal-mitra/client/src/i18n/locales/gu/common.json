@@ -1,0 +1,13 @@
+{
+  "loading": "લોડ થઈ રહ્યું છે...",
+  "error": "ભૂલ",
+  "retry": "ફરી પ્રયાસ કરો",
+  "refresh": "તાજું કરો",
+  "weather": "હવામાન",
+  "temperature": "તાપમાન",
+  "humidity": "ભેજ",
+  "wind_speed": "પવનની ઝડપ",
+  "air_quality": "હવાની ગુણવત્તા",
+  "precipitation": "વરસાદ",
+  "updated_just_now": "હમણાં જ અપડેટ થયું"
+}
