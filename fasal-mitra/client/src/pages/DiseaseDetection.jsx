@@ -6,6 +6,7 @@ import DiseaseList from '../components/disease/DiseaseList';
 import TreatmentPlan from '../components/disease/TreatmentPlan';
 import FieldHelpIcon from '../components/FieldHelpIcon';
 import FieldHelpModal from '../components/FieldHelpModal';
+import { VoiceSummary } from '../components/voice';
 import '../styles/disease-detection.css';
 import '../styles/pages.css';
 
@@ -59,7 +60,7 @@ const DiseaseDetection = () => {
 
     const handleDetectDisease = async () => {
         if (!selectedImage) {
-            setError('Please select an image first');
+            setError(t('pages:diseaseDetection.pleaseSelectImage'));
             return;
         }
 
@@ -112,14 +113,12 @@ const DiseaseDetection = () => {
         <div className="page-container">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="page-header-title">
-                        <Bug className="inline-block w-8 h-8 mr-3 text-green-600" />
-                        {t('diseaseDetection.title')}
-                    </h1>
-                    <p className="page-header-subtitle">
-                        {t('diseaseDetection.subtitle')}
-                    </p>
+                <div className="page-header">
+                    <Bug className="page-header-icon" />
+                    <div>
+                        <h1 className="page-header-title">{t('diseaseDetection.title')}</h1>
+                        <p className="page-header-subtitle">{t('diseaseDetection.subtitle')}</p>
+                    </div>
                 </div>
 
                 {/* Tab Navigation */}
@@ -128,19 +127,22 @@ const DiseaseDetection = () => {
                         className={`tab-button ${activeTab === 'detect' ? 'tab-active' : ''}`}
                         onClick={() => setActiveTab('detect')}
                     >
-                        🔬 Disease Detection
+                        <Bug className="tab-icon" />
+                        Disease Detection
                     </button>
                     <button
                         className={`tab-button ${activeTab === 'database' ? 'tab-active' : ''}`}
                         onClick={() => setActiveTab('database')}
                     >
-                        📚 Disease Database
+                        <AlertCircle className="tab-icon" />
+                        Disease Database
                     </button>
                     <button
                         className={`tab-button ${activeTab === 'aiagent' ? 'tab-active' : ''}`}
                         onClick={() => setActiveTab('aiagent')}
                     >
-                        🤖 AI Agent
+                        <MessageCircle className="tab-icon" />
+                        AI Agent
                     </button>
                 </div>
 
@@ -195,16 +197,21 @@ const DiseaseDetection = () => {
                     </div>
                 ) : activeTab === 'detect' ? (
                     <div className="disease-detection-content">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            {/* Left Column - Input Section */}
-                            <div className="detection-input-section">
+                        <div className="detection-layout">
+                            {/* Left Column - Image Upload (50%) */}
+                            <div className="detection-image-section">
                                 <div className="input-card">
                                     <h2 className="section-title">Upload Image</h2>
                                     <ImageUpload
                                         onImageSelect={handleImageSelect}
                                         selectedImage={selectedImage}
                                     />
+                                </div>
+                            </div>
 
+                            {/* Right Column - Form Inputs (50%) */}
+                            <div className="detection-form-section">
+                                <div className="input-card">
                                     {/* Crop Selection */}
                                     <div className="form-group">
                                         <label className="form-label">
@@ -232,7 +239,7 @@ const DiseaseDetection = () => {
                                             type="text"
                                             value={location}
                                             onChange={(e) => setLocation(e.target.value)}
-                                            placeholder="e.g., Punjab, Maharashtra"
+                                            placeholder={t('pages:diseaseDetection.locationPlaceholder')}
                                             className="form-input"
                                         />
                                     </div>
@@ -274,6 +281,7 @@ const DiseaseDetection = () => {
                                     )}
                                 </div>
                             </div>
+                        </div>
 
                             {/* Right Column - Results Section */}
                             <div className="detection-results-section">
@@ -284,6 +292,17 @@ const DiseaseDetection = () => {
                                             treatmentPlan={detectionResult.treatment_plan}
                                             severity={detectionResult.estimated_severity}
                                             recommendations={detectionResult.recommendations}
+                                        />
+                                        
+                                        {/* Voice Summary for Disease Detection Results */}
+                                        <VoiceSummary
+                                            result={detectionResult}
+                                            resultType="diseaseDetection"
+                                            title="🎧 Disease Analysis Summary"
+                                            className="disease-voice-summary"
+                                            onSpeechStart={() => console.log('Started reading disease detection summary')}
+                                            onSpeechEnd={() => console.log('Finished reading disease detection summary')}
+                                            onSpeechError={(error) => console.error('Disease speech error:', error)}
                                         />
                                     </div>
                                 ) : (
@@ -301,7 +320,6 @@ const DiseaseDetection = () => {
                                 )}
                             </div>
                         </div>
-                    </div>
                 ) : (
                     <DiseaseList 
                         diseases={diseases} 
