@@ -29,3 +29,28 @@
     padding: 2rem;
     text-align: center;
 }
+
+/* Results Divider - Clean Professional Separator */
+.results-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 3rem 0 2rem 0;
+    padding: 1rem 0;
+}
+
+.results-divider .divider-line {
+    flex: 1;
+    height: 1px;
+    border-top: 1px dashed #d1d5db;
+}
+
+.results-divider .divider-text {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
