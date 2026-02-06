@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Bug, AlertCircle, CheckCircle, Loader2, MessageCircle, ExternalLink } from 'lucide-react';
 import ImageUpload from '../components/disease/ImageUpload';
 import DetectionResults from '../components/disease/DetectionResults';
@@ -11,7 +10,6 @@ import '../styles/disease-detection.css';
 import '../styles/pages.css';
 
 const DiseaseDetection = () => {
-    const { t } = useTranslation(['pages', 'common']);
     const [activeTab, setActiveTab] = useState('detect');
     const [selectedImage, setSelectedImage] = useState(null);
     const [cropType, setCropType] = useState('Rice');

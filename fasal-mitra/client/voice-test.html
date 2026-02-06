@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Feature Test Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            min-height: 60px;
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .result.listening {
+            background: #e7f3ff;
+            border: 2px dashed #667eea;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .voice-list {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .voice-item {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .indicator.green {
+            background: #28a745;
+        }
+
+        .indicator.red {
+            background: #dc3545;
+        }
+
+        .indicator.yellow {
+            background: #ffc107;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 Voice Feature Tester</h1>
+        <p class="subtitle">Test voice recognition and text-to-speech capabilities</p>
+
+        <!-- Browser Support Check -->
+        <div class="section">
+            <div class="section-title">Browser Support</div>
+            <div id="supportStatus"></div>
+        </div>
+
+        <!-- Voice Recognition Test -->
+        <div class="section">
+            <div class="section-title">Voice Recognition (Speech-to-Text)</div>
+            <button id="startBtn" onclick="startVoiceTest()">🎤 Start Voice Recognition</button>
+            <button id="stopBtn" onclick="stopVoiceTest()" disabled style="display: none;">⏹️ Stop Listening</button>
+            <div id="result" class="result">Click the button above and speak...</div>
+        </div>
+
+        <!-- Text-to-Speech Test -->
+        <div class="section">
+            <div class="section-title">Text-to-Speech</div>
+            <button onclick="testTTS()">🔊 Test Voice Output</button>
+            <button onclick="stopSpeaking()">⏹️ Stop Speaking</button>
+        </div>
+
+        <!-- Available Voices -->
+        <div class="section">
+            <div class="section-title">Available Voices</div>
+            <button onclick="loadVoices()">📋 Show Available Voices</button>
+            <div id="voiceList" class="voice-list" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script>
+        let recognition = null;
+        let isListening = false;
+
+        // Check browser support
+        function checkSupport() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const hasSpeechRecognition = !!SpeechRecognition;
+            const hasSpeechSynthesis = !!window.speechSynthesis;
+
+            let html = '';
+
+            if (hasSpeechRecognition) {
+                html += `<div class="status success">
+                    <span class="indicator green"></span>
+                    <strong>Speech Recognition:</strong> ✅ Supported
+                </div>`;
+            } else {
+                html += `<div class="status error">
+                    <span class="indicator red"></span>
+                    <strong>Speech Recognition:</strong> ❌ Not Supported - Use Chrome or Edge
+                </div>`;
+            }
+
+            if (hasSpeechSynthesis) {
+                html += `<div class="status success">
+                    <span class="indicator green"></span>
+                    <strong>Text-to-Speech:</strong> ✅ Supported
+                </div>`;
+            } else {
+                html += `<div class="status error">
+                    <span class="indicator red"></span>
+                    <strong>Text-to-Speech:</strong> ❌ Not Supported
+                </div>`;
+            }
+
+            document.getElementById('supportStatus').innerHTML = html;
+
+            if (hasSpeechRecognition) {
+                initializeRecognition();
+            }
+        }
+
+        function initializeRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-IN';
+
+            recognition.onstart = () => {
+                isListening = true;
+                document.getElementById('result').className = 'result listening';
+                document.getElementById('result').textContent = '🎤 Listening... Speak now!';
+                document.getElementById('startBtn').style.display = 'none';
+                document.getElementById('stopBtn').style.display = 'block';
+                document.getElementById('stopBtn').disabled = false;
+            };
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                const confidence = event.results[0][0].confidence;
+                document.getElementById('result').className = 'result';
+                document.getElementById('result').innerHTML = `
+                    <strong>You said:</strong> "${transcript}"<br>
+                    <small style="color: #666;">Confidence: ${(confidence * 100).toFixed(0)}%</small>
+                `;
+            };
+
+            recognition.onerror = (event) => {
+                document.getElementById('result').className = 'result';
+                let errorMsg = '';
+                switch (event.error) {
+                    case 'no-speech':
+                        errorMsg = '❌ No speech detected. Please try again.';
+                        break;
+                    case 'audio-capture':
+                        errorMsg = '❌ Microphone not found. Please check your device.';
+                        break;
+                    case 'not-allowed':
+                        errorMsg = '❌ Microphone access denied. Please allow permissions.';
+                        break;
+                    case 'network':
+                        errorMsg = '❌ Network error. Please check your connection.';
+                        break;
+                    default:
+                        errorMsg = `❌ Error: ${event.error}`;
+                }
+                document.getElementById('result').textContent = errorMsg;
+                resetButtons();
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                resetButtons();
+            };
+        }
+
+        function resetButtons() {
+            document.getElementById('startBtn').style.display = 'block';
+            document.getElementById('stopBtn').style.display = 'none';
+        }
+
+        function startVoiceTest() {
+            if (recognition && !isListening) {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    document.getElementById('result').textContent = '❌ Error starting recognition: ' + error.message;
+                }
+            }
+        }
+
+        function stopVoiceTest() {
+            if (recognition && isListening) {
+                recognition.stop();
+            }
+        }
+
+        function testTTS() {
+            const text = 'Hello farmer! Welcome to FasalMitra. This is a test of the text-to-speech feature. The voice recognition system is working perfectly.';
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-IN';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            // Try to use Indian English voice if available
+            const voices = speechSynthesis.getVoices();
+            const indianVoice = voices.find(v => v.lang === 'en-IN') || voices.find(v => v.lang.startsWith('en'));
+            if (indianVoice) {
+                utterance.voice = indianVoice;
+            }
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            speechSynthesis.cancel();
+        }
+
+        function loadVoices() {
+            const voiceList = document.getElementById('voiceList');
+            voiceList.style.display = 'block';
+
+            const voices = speechSynthesis.getVoices();
+            
+            if (voices.length === 0) {
+                voiceList.innerHTML = '<div style="color: #666;">Loading voices... Please wait and try again.</div>';
+                return;
+            }
+
+            let html = '';
+            voices.forEach((voice, index) => {
+                const isIndian = voice.lang.includes('IN');
+                const isEnglish = voice.lang.startsWith('en');
+                html += `
+                    <div class="voice-item">
+                        <span>
+                            ${isIndian ? '🇮🇳' : ''} 
+                            ${voice.name}
+                        </span>
+                        <span style="color: #666; font-size: 11px;">
+                            ${voice.lang}
+                        </span>
+                    </div>
+                `;
+            });
+
+            voiceList.innerHTML = html || '<div style="color: #666;">No voices available</div>';
+        }
+
+        // Initialize on load
+        checkSupport();
+
+        // Load voices when available
+        if (window.speechSynthesis) {
+            speechSynthesis.onvoiceschanged = () => {
+                console.log('Voices loaded');
+            };
+        }
+    </script>
+</body>
+</html>

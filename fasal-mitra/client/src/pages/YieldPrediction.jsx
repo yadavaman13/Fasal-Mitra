@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { Sprout, TrendingUp, AlertCircle, CheckCircle, Loader, Leaf, Droplets, Bug, Maximize2, PackagePlus, Info } from 'lucide-react';
 import { predictYield, checkServerHealth } from '../services/yieldService';
 import FieldHelpIcon from '../components/FieldHelpIcon';
@@ -8,7 +7,6 @@ import '../styles/pages.css';
 import '../styles/yield-prediction.css';
 
 const YieldPrediction = () => {
-    const { t } = useTranslation(['pages', 'common']);
     const [formData, setFormData] = useState({
         crop: '',
         state: '',
