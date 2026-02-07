@@ -77,7 +77,7 @@ const YieldPrediction = () => {
             }
         } catch (err) {
             console.error('Error:', err);
-            setError(err.message || 'Network error. Please ensure the backend server is running on http://localhost:8000');
+            setError(err.message || 'Network error. Please ensure the backend server is running.');
         } finally {
             setLoading(false);
         }
