@@ -16,6 +16,11 @@ scipy>=1.11.0
 Pillow>=10.0.0
 opencv-python>=4.8.0
 
+# Machine Learning / Deep Learning
+tensorflow>=2.15.0  # For plant disease detection ML model
+# Note: Use tensorflow-cpu for CPU-only deployment (smaller size)
+# tensorflow-cpu>=2.15.0
+
 # HTTP & External APIs
 requests>=2.31.0
 httpx>=0.25.0
