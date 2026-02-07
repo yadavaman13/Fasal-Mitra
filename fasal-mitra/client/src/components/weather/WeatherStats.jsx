@@ -1,5 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import precipitationIcon from '../../assets/precipitation.png';
+import windIcon from '../../assets/wind.jpg';
+import humidityIcon from '../../assets/humidity.png';
+import airQualityIcon from '../../assets/air_quality.png';
 
 export const WeatherStats = ({ currentWeather, airQuality, weatherData }) => {
   const { t } = useTranslation('common');
@@ -68,7 +72,7 @@ export const WeatherStats = ({ currentWeather, airQuality, weatherData }) => {
       <div className="weather-stat-item">
         <div className="weather-stat-header">
           <img 
-            src="/src/assets/precipitation.png" 
+            src={precipitationIcon} 
             alt="Precipitation" 
             className="weather-stat-icon"
             onError={(e) => {
@@ -84,7 +88,7 @@ export const WeatherStats = ({ currentWeather, airQuality, weatherData }) => {
       <div className="weather-stat-item">
         <div className="weather-stat-header">
           <img 
-            src="/src/assets/wind.jpg" 
+            src={windIcon} 
             alt="Wind Speed" 
             className="weather-stat-icon"
             onError={(e) => {
@@ -99,7 +103,7 @@ export const WeatherStats = ({ currentWeather, airQuality, weatherData }) => {
       <div className="weather-stat-item">
         <div className="weather-stat-header">
           <img 
-            src="/src/assets/humidity.png" 
+            src={humidityIcon} 
             alt="Humidity" 
             className="weather-stat-icon"
             onError={(e) => {
@@ -114,7 +118,7 @@ export const WeatherStats = ({ currentWeather, airQuality, weatherData }) => {
       <div className="weather-stat-item">
         <div className="weather-stat-header">
           <img 
-            src="/src/assets/air_quality.png" 
+            src={airQualityIcon} 
             alt="Air Quality" 
             className="weather-stat-icon"
             onError={(e) => {

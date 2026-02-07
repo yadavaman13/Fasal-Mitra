@@ -39,9 +39,10 @@ const DiseaseDetection = () => {
 
     const fetchDiseases = async (filterCrop = null) => {
         try {
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
             const url = filterCrop 
-                ? `http://localhost:8000/api/v1/disease/diseases?crop_type=${encodeURIComponent(filterCrop)}`
-                : 'http://localhost:8000/api/v1/disease/diseases';
+                ? `${baseUrl}/api/v1/disease/diseases?crop_type=${encodeURIComponent(filterCrop)}`
+                : `${baseUrl}/api/v1/disease/diseases`;
             
             const response = await fetch(url);
             const data = await response.json();
@@ -77,7 +78,8 @@ const DiseaseDetection = () => {
                 formData.append('location', location);
             }
 
-            const response = await fetch('http://localhost:8000/api/v1/disease/detect', {
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const response = await fetch(`${baseUrl}/api/v1/disease/detect`, {
                 method: 'POST',
                 body: formData
             });
