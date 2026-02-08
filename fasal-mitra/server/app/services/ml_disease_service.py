@@ -23,21 +23,28 @@ class MLDiseaseDetectionService:
     
     def __init__(self):
         """Initialize ML model and disease database"""
+        logger.info("[INIT] Initializing ML Disease Detection Service...")
         self.model = None
         self.disease_database = self._load_disease_database()
+        logger.info(f"[INIT] Disease database loaded: {len(self.disease_database)} diseases")
         self.class_labels = self._get_class_labels()
+        logger.info(f"[INIT] Class labels loaded: {len(self.class_labels)} classes")
         self.model_loaded = False
         
         # Try to load model on initialization
+        logger.info("[INIT] Loading TensorFlow model (this may take 30-60 seconds on first load)...")
         try:
             self._load_model()
+            logger.info("[INIT] ML Model loaded successfully! Service ready.")
         except Exception as e:
-            logger.warning(f"Model not loaded on init: {e}. Will use fallback detection.")
+            logger.warning(f"[WARN] Model not loaded on init: {e}. Will use fallback detection.")
     
     def _load_model(self):
         """Load TensorFlow/Keras model"""
         try:
+            logger.info("[LOAD] Importing TensorFlow...")
             import tensorflow as tf
+            logger.info(f"[LOAD] TensorFlow {tf.__version__} imported successfully")
             
             model_path = Path(__file__).parent.parent / "models" / "ml" / "plant_disease_recog_model_pwp.keras"
             
@@ -48,12 +55,15 @@ class MLDiseaseDetectionService:
                     "See app/models/ml/README.md for instructions."
                 )
             
-            logger.info(f"Loading ML model from {model_path}")
+            size_mb = model_path.stat().st_size / (1024 * 1024)
+            logger.info(f"[LOAD] Found model file: {model_path.name} ({size_mb:.2f} MB)")
+            logger.info(f"[LOAD] Loading model (this takes time, please wait)...")
+            
             # Load model without compiling (compile=False) to avoid optimizer compatibility issues
             # We only need the model for inference, not training
             self.model = tf.keras.models.load_model(str(model_path), compile=False)
             self.model_loaded = True
-            logger.info("ML model loaded successfully")
+            logger.info("[LOAD] ML model loaded successfully into memory!")
             
         except ImportError as e:
             logger.error(f"TensorFlow not installed: {e}")
@@ -141,22 +151,28 @@ class MLDiseaseDetectionService:
         try:
             # Open image
             image = Image.open(io.BytesIO(image_data))
+            logger.info(f"[PREPROCESS] Original image: size={image.size}, mode={image.mode}")
             
             # Convert to RGB if necessary
             if image.mode != 'RGB':
                 image = image.convert('RGB')
+                logger.info(f"[PREPROCESS] Converted to RGB")
             
             # Resize to model input size (160x160)
             image = image.resize((160, 160))
+            logger.info(f"[PREPROCESS] Resized to 160x160")
             
-            # Convert to numpy array
-            img_array = np.array(image)
+            # Convert to numpy array (uint8 for 0-255 range)
+            img_array = np.array(image, dtype=np.float32)
+            logger.info(f"[PREPROCESS] Converted to array: shape={img_array.shape}, dtype={img_array.dtype}")
+            logger.info(f"[PREPROCESS] Pixel range: min={img_array.min()}, max={img_array.max()}, mean={img_array.mean():.2f}")
             
             # Expand dimensions to match model input shape (1, 160, 160, 3)
             img_array = np.expand_dims(img_array, axis=0)
             
-            # Normalize pixel values (0-1 range)
-            img_array = img_array / 255.0
+            # NOTE: DO NOT NORMALIZE! Model was trained on 0-255 range
+            # (Reference: Plant-Disease-Recognition-System uses img_to_array without normalization)
+            logger.info(f"[PREPROCESS] Final array: shape={img_array.shape}, range=[{img_array.min()}, {img_array.max()}]")
             
             return img_array
         
@@ -222,11 +238,20 @@ class MLDiseaseDetectionService:
                     return self._fallback_detection(crop_type, location, str(e))
             
             # Preprocess image
+            logger.info(f"[DETECT] Starting disease detection for {crop_type}...")
             processed_image = self._preprocess_image(image_data)
             
             # Make prediction
             import tensorflow as tf
+            logger.info(f"[PREDICT] Running model prediction...")
             predictions = self.model.predict(processed_image, verbose=0)
+            logger.info(f"[PREDICT] Prediction complete. Shape: {predictions.shape}")
+            
+            # Log top 5 predictions for debugging
+            top_5_indices = np.argsort(predictions[0])[-5:][::-1]
+            logger.info(f"[PREDICT] Top 5 predictions:")
+            for i, idx in enumerate(top_5_indices, 1):
+                logger.info(f"[PREDICT]    {i}. {self.class_labels[idx]}: {predictions[0][idx]*100:.2f}%")
             
             # Get prediction index and confidence
             predicted_index = np.argmax(predictions[0])
@@ -234,6 +259,7 @@ class MLDiseaseDetectionService:
             
             # Get disease label
             disease_label = self.class_labels[predicted_index]
+            logger.info(f"[RESULT] Final prediction: {disease_label} (confidence: {confidence*100:.2f}%)")
             
             # Get disease details from database
             disease_info = self.disease_database.get(disease_label, {
@@ -270,6 +296,18 @@ class MLDiseaseDetectionService:
                 "model_used": "TensorFlow CNN (39 classes)"
             }
             
+            # Optional: Add LLM-generated personalized advice (if GEMINI_API_KEY is set)
+            if not is_healthy and severity != 'none':
+                llm_advice = await self.get_llm_treatment_advice(
+                    disease_name=self._format_disease_name(disease_label),
+                    crop=detected_crop,
+                    location=location or "Unknown",
+                    severity=severity
+                )
+                if llm_advice:
+                    response['llm_advice'] = llm_advice
+                    logger.info("✅ Added LLM-generated treatment advice to response")
+            
             return response
         
         except Exception as e:
@@ -285,6 +323,55 @@ class MLDiseaseDetectionService:
             disease = parts[1].replace('_', ' ').replace('(', '(').replace(')', ')')
             return f"{crop} - {disease}".title()
         return label.replace('_', ' ').title()
+    
+    async def get_llm_treatment_advice(self, disease_name: str, crop: str, location: str, severity: str) -> Optional[str]:
+        """
+        Get personalized treatment advice from LLM (Gemini API)
+        This is an OPTIONAL enhancement for better recommendations
+        """
+        try:
+            import google.generativeai as genai
+            import os
+            
+            api_key = os.getenv('GEMINI_API_KEY')
+            if not api_key:
+                logger.debug("GEMINI_API_KEY not set, skipping LLM advice")
+                return None
+            
+            genai.configure(api_key=api_key)
+            model = genai.GenerativeModel('gemini-pro')
+            
+            prompt = f"""You are an expert agricultural advisor helping farmers.
+
+Disease Detected: {disease_name}
+Crop: {crop}
+Location: {location}
+Severity: {severity}
+
+Provide practical, farmer-friendly advice in simple language with these sections:
+1. IMMEDIATE ACTIONS (next 24-48 hours)
+2. ORGANIC TREATMENTS (natural, low-cost options)
+3. CHEMICAL TREATMENTS (if necessary, with safety warnings)
+4. PREVENTION (for future crops)
+5. WHEN TO CONSULT EXPERT
+
+IMPORTANT GUIDELINES:
+- Use simple language (5th grade reading level)
+- Focus on SAFE, affordable, locally-available treatments
+- Include safety warnings for chemical treatments
+- Suggest consulting local agricultural extension officer for serious cases
+- DO NOT recommend specific dosages unless you're certain they're safe
+- Prioritize organic/natural solutions first
+
+Keep response concise (under 300 words) and actionable."""
+            
+            response = model.generate_content(prompt)
+            logger.info("✅ LLM advice generated successfully")
+            return response.text
+            
+        except Exception as e:
+            logger.warning(f"Could not generate LLM advice: {e}")
+            return None
     
     def _generate_recommendations(self, disease_label: str, severity: str, confidence: float, crop: str) -> List[str]:
         """Generate actionable recommendations"""
@@ -436,5 +523,7 @@ def get_ml_disease_service() -> MLDiseaseDetectionService:
     """Get singleton instance of ML disease detection service"""
     global _ml_disease_service
     if _ml_disease_service is None:
+        logger.info("🔧 Creating ML Disease Detection Service instance...")
         _ml_disease_service = MLDiseaseDetectionService()
+        logger.info("🎉 ML Disease Detection Service ready!")
     return _ml_disease_service
