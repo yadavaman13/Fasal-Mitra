@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, Loader2, AlertCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import fasalMitraLogo from '../assets/Fasal Mitra logo.png';
+import fasalMitraLogo from '../assets/FasalMitraLogoCircle.png';
 import '../styles/chatbot-widget.css';
 
 const ChatbotWidget = () => {
