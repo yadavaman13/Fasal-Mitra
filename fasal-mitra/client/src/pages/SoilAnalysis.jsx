@@ -46,6 +46,7 @@ const SoilAnalysis = () => {
     const [locationLoading, setLocationLoading] = useState(false);
     const [locationError, setLocationError] = useState(null);
     const [stateAutoDetected, setStateAutoDetected] = useState(false);
+    const [detectedStateName, setDetectedStateName] = useState(null);
 
     // Field help modal state
     const [helpModalOpen, setHelpModalOpen] = useState(false);
@@ -428,11 +429,57 @@ const SoilAnalysis = () => {
             { name: 'Ladakh', bounds: { minLat: 32.3, maxLat: 37.1, minLng: 75.9, maxLng: 79.9 } }
         ];
 
+        console.log('🔍 Detecting state for coordinates:', { latitude, longitude });
+        console.log('📋 Available states from backend:', states);
+
         for (const state of stateData) {
             const { bounds } = state;
             if (latitude >= bounds.minLat && latitude <= bounds.maxLat &&
                 longitude >= bounds.minLng && longitude <= bounds.maxLng) {
 
+                console.log('📍 Detected geographic state:', state.name);
+
+                // Try exact match first (case-insensitive)
+                const exactMatch = states.find(s => 
+                    s.toLowerCase() === state.name.toLowerCase()
+                );
+
+                if (exactMatch) {
+                    console.log('✅ Exact match found:', exactMatch);
+                    return { detectedName: state.name, matchedState: exactMatch };
+                }
+
+                // Try normalized match (remove spaces and special characters)
+                const normalizedStateName = state.name.toLowerCase().replace(/[^a-z]/g, '');
+                const normalizedMatch = states.find(s => {
+                    const normalizedAvailable = s.toLowerCase().replace(/[^a-z]/g, '');
+                    return normalizedAvailable === normalizedStateName;
+                });
+
+                if (normalizedMatch) {
+                    console.log('✅ Normalized match found:', normalizedMatch);
+                    return { detectedName: state.name, matchedState: normalizedMatch };
+                }
+
+                // Try partial match
+                const partialMatch = states.find(s => {
+                    const sLower = s.toLowerCase();
+                    const stateLower = state.name.toLowerCase();
+                    return sLower.includes(stateLower) || stateLower.includes(sLower);
+                });
+
+                if (partialMatch) {
+                    console.log('✅ Partial match found:', partialMatch);
+                    return { detectedName: state.name, matchedState: partialMatch };
+                }
+
+                console.log('⚠️ State detected but not available in backend:', state.name);
+                return { detectedName: state.name, matchedState: null };
+            }
+        }
+
+        console.log('❌ No state found for coordinates');
+        return { detectedName: null, matchedState: null };
                 // Check if this state is available in our states list with better matching
                 const normalizedStateName = state.name.toLowerCase().replace(/[^a-z]/g, '');
                 const availableState = states.find(s => {
@@ -487,11 +534,35 @@ const SoilAnalysis = () => {
                 setLocationLoading(false);
 
                 // Auto-select state based on coordinates
+                const { detectedName, matchedState } = getStateFromCoordinates(
                 const detectedState = getStateFromCoordinates(
                     newLocation.latitude,
                     newLocation.longitude
                 );
 
+                setDetectedStateName(detectedName);
+
+                if (matchedState) {
+                    setFormData(prev => ({ ...prev, state: matchedState }));
+                    setStateAutoDetected(true);
+
+                    // Clear auto-detection indicator after 5 seconds
+                    setTimeout(() => {
+                        setStateAutoDetected(false);
+                    }, 5000);
+
+                    console.log(`✅ Location detected! Auto-selected state: ${matchedState}`);
+                } else if (detectedName) {
+                    console.log(`⚠️ Location detected (${detectedName}) but not available in the system. Please select your state manually.`);
+                    setLocationError(`Location detected: ${detectedName}. Please select your state manually.`);
+                } else {
+                    console.log('❌ Could not determine state from your location.');
+                    setLocationError('Could not determine state from your location. Please select manually.');
+                }
+
+                if (matchedState) {
+                    setLocationError(null);
+                }
                 if (detectedState) {
                     setFormData(prev => ({ ...prev, state: detectedState }));
                     setStateAutoDetected(true);

@@ -1,3 +1,10 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { X, Send, Loader2, AlertCircle, HelpCircle } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import fasalMitraLogo from '../assets/Fasal Mitra logo.png';
+import useVoiceRecognition from '../hooks/useVoiceRecognition';
+import useTextToSpeech from '../hooks/useTextToSpeech';
+import VoiceInputButton from './VoiceInputButton';
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Send, Loader2, AlertCircle, HelpCircle } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -16,10 +23,72 @@ const FieldHelpModal = ({ isOpen, onClose, fieldLabel, fieldName }) => {
     const [isTyping, setIsTyping] = useState(false);
     const [error, setError] = useState(null);
     const [sessionId] = useState(() => `field-help-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
+    const [voiceLanguage, setVoiceLanguage] = useState('en-IN');
+    const [isRecording, setIsRecording] = useState(false);
     
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
     const modalRef = useRef(null);
+    const lastBotMessageRef = useRef(null);
+    const lastTranscriptRef = useRef('');
+
+    // Stable callbacks for voice recognition
+    const handleVoiceResult = useCallback((transcript) => {
+        console.log('📝 Final voice result received:', transcript);
+        lastTranscriptRef.current = transcript;
+        // Send the message immediately when final result is received
+        if (transcript.trim()) {
+            const userMessage = {
+                id: `user-${Date.now()}`,
+                text: transcript,
+                sender: 'user',
+                timestamp: new Date()
+            };
+            setMessages(prev => [...prev, userMessage]);
+            sendMessageToAPI(transcript);
+        }
+    }, []);
+
+    const handleVoiceError = useCallback((errorMessage) => {
+        console.error('🎤 Voice error:', errorMessage);
+        setError(errorMessage);
+        // Auto-clear error after 3 seconds
+        setTimeout(() => {
+            setError(null);
+        }, 3000);
+    }, []);
+
+    // Voice Recognition Hook
+    const {
+        isListening,
+        isSupported: isVoiceSupported,
+        transcript: liveTranscript,
+        startListening,
+        stopListening
+    } = useVoiceRecognition({
+        language: voiceLanguage,
+        onResult: handleVoiceResult,
+        onError: handleVoiceError
+    });
+
+    // Sync recording state with actual speech recognition
+    useEffect(() => {
+        if (!isListening && isRecording) {
+            setIsRecording(false);
+        }
+    }, [isListening, isRecording]);
+
+    // Text-to-Speech Hook
+    const {
+        speak,
+        stop: stopSpeaking,
+        isSpeaking
+    } = useTextToSpeech({
+        language: voiceLanguage,
+        rate: 1.0,
+        pitch: 1.0,
+        volume: 1.0
+    });
 
     // Auto-scroll to bottom
     useEffect(() => {
@@ -145,6 +214,13 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
         }
     };
 
+    // Separate API function to avoid circular dependencies in callbacks
+    const sendMessageToAPI = useCallback(async (messageText) => {
+        if (!messageText.trim()) return;
+
+        const userMessage = {
+            id: `user-${Date.now()}`,
+            text: messageText,
     const handleSendMessage = async () => {
         if (!inputMessage.trim()) return;
 
@@ -168,6 +244,7 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    question: messageText,
                     question: inputMessage,
                     language: 'en',
                     session_id: sessionId,
@@ -185,6 +262,7 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
                     timestamp: new Date()
                 };
                 setMessages(prev => [...prev, botMessage]);
+                lastBotMessageRef.current = botMessage.text;
             } else {
                 throw new Error(data.message || 'Failed to get response');
             }
@@ -194,6 +272,14 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
         } finally {
             setIsTyping(false);
         }
+    }, [sessionId, fieldLabel]);
+
+    const handleSendMessage = async (textToSend = null) => {
+        const messageText = textToSend || inputMessage;
+        if (!messageText.trim()) return;
+        
+        setInputMessage('');
+        await sendMessageToAPI(messageText);
     };
 
     const handleKeyPress = (e) => {
@@ -201,6 +287,19 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
             e.preventDefault();
             handleSendMessage();
         }
+    };
+
+    const handleVoiceInput = () => {
+        setError(null); // Clear any previous errors
+        setInputMessage(''); // Clear input field when starting to listen
+        setIsRecording(true); // Set local recording state
+        startListening();
+    };
+
+    const handleStopVoiceInput = () => {
+        setIsRecording(false); // Immediately clear local recording state
+        stopListening();
+        // Message will be sent via handleVoiceResult when final transcript arrives
     };
 
     // Handle click outside modal to close
@@ -283,6 +382,58 @@ However, you can ask me anything about "${cleanLabel}" - just type your question
 
                 {/* Input */}
                 <div className="field-help-input-container">
+                    <div className="field-help-input-wrapper">
+                        {/* Voice Input Button */}
+                        <VoiceInputButton
+                            isListening={isRecording}
+                            isSupported={isVoiceSupported}
+                            onStartListening={handleVoiceInput}
+                            onStopListening={handleStopVoiceInput}
+                            disabled={isTyping}
+                        />
+
+                        {/* Text Input with Recording/Processing Indicator */}
+                        <div className="input-with-indicator">
+                            <input
+                                ref={inputRef}
+                                type="text"
+                                value={inputMessage}
+                                onChange={(e) => setInputMessage(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder={isRecording ? "Listening..." : "Ask a follow-up question..."}
+                                className={`field-help-input ${isRecording ? 'recording' : ''}`}
+                                disabled={isTyping}
+                                readOnly={isRecording}
+                            />
+                            {isRecording && (
+                                <div className="recording-indicator">
+                                    <span className="recording-dot"></span>
+                                    <span className="recording-text">Recording</span>
+                                    <span className="recording-wave">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Send Button */}
+                        <button
+                            onClick={() => handleSendMessage()}
+                            disabled={!inputMessage.trim() || isTyping || isRecording}
+                            className="field-help-send-btn"
+                            aria-label="Send message"
+                        >
+                            {isTyping ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                                <Send className="w-5 h-5" />
+                            )}
+                        </button>
+                    </div>
                     <input
                         ref={inputRef}
                         type="text"
