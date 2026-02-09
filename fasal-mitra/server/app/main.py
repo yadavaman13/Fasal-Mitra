@@ -107,6 +107,20 @@ async def startup_event():
         logger.warning(f"Data directory not found: {settings.DATA_DIR}")
     else:
         logger.info(f"Data directory found: {settings.DATA_DIR}")
+    
+    # Pre-load ML model for faster first request
+    logger.info("[STARTUP] Pre-loading ML Disease Detection Service...")
+    try:
+        from app.services.ml_disease_service import get_ml_disease_service
+        service = get_ml_disease_service()
+        if service.model_loaded:
+            logger.info("[STARTUP] ML model pre-loaded successfully!")
+        else:
+            logger.warning("[STARTUP] ML model not loaded - will use fallback detection")
+    except Exception as e:
+        logger.error(f"[STARTUP] Failed to pre-load ML service: {e}")
+    
+    logger.info("[STARTUP] FasalMitra API is ready to accept requests!")
 
 # Shutdown event
 @app.on_event("shutdown")

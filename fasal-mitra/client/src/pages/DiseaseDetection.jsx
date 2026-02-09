@@ -45,7 +45,13 @@ const DiseaseDetection = () => {
                 ? `${baseUrl}/api/v1/disease/diseases?crop_type=${encodeURIComponent(filterCrop)}`
                 : `${baseUrl}/api/v1/disease/diseases`;
             
-            const response = await fetch(url);
+            // Add timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
             const data = await response.json();
             
             if (data.success) {
@@ -53,6 +59,9 @@ const DiseaseDetection = () => {
             }
         } catch (err) {
             console.error('Failed to fetch diseases:', err);
+            if (err.name === 'AbortError' || err.message.includes('Failed to fetch')) {
+                console.warn('Backend server may not be running. Start it with: cd fasal-mitra/server && python run.py');
+            }
         }
     };
 
@@ -79,11 +88,18 @@ const DiseaseDetection = () => {
                 formData.append('location', location);
             }
 
+            // Add timeout to prevent hanging forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
             const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
             const response = await fetch(`${baseUrl}/api/v1/disease/detect`, {
                 method: 'POST',
-                body: formData
+                body: formData,
+                signal: controller.signal
             });
+
+            clearTimeout(timeoutId);
 
             const data = await response.json();
 
@@ -93,7 +109,13 @@ const DiseaseDetection = () => {
                 setError(data.message || 'Detection failed');
             }
         } catch (err) {
-            setError('Failed to detect disease. Please try again.');
+            if (err.name === 'AbortError') {
+                setError('Request timed out. Please ensure the backend server is running at http://localhost:8000');
+            } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                setError('Cannot connect to server. Please start the backend server: cd fasal-mitra/server && python run.py');
+            } else {
+                setError('Failed to detect disease. Please try again.');
+            }
             console.error('Detection error:', err);
         } finally {
             setIsDetecting(false);
@@ -288,8 +310,8 @@ const DiseaseDetection = () => {
                             </div>
                         </div>
 
-                            {/* Right Column - Results Section */}
-                            <div className="detection-results-section">
+                        {/* Right Column - Results Section */}
+                        <div className="detection-results-section">
                                 {detectionResult ? (
                                     <div className="space-y-6">
                                         <DetectionResults result={detectionResult} />

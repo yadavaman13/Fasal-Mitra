@@ -55,5 +55,4 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Data (keep in parent directory)
-data/
+
