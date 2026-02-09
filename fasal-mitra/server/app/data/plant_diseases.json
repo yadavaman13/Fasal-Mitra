@@ -1,0 +1,314 @@
+[
+    {
+        "name": "Apple___Apple_scab",
+        "cause": "Fungus Venturia inaequalis. Favorable conditions are cool, wet weather.",
+        "cure": "Use fungicides and resistant apple varieties. Prune and destroy infected leaves.",
+        "simple_explanation": "A fungal disease that creates dark, scabby spots on apple leaves and fruits. It spreads easily in wet, cool weather.",
+        "how_to_spot": "Look for dark brown or olive-green spots on leaves. Fruits may have raised, corky spots. Leaves might curl and fall early.",
+        "prevention_tips": "Remove fallen leaves in autumn. Space plants well for air flow. Water plants at base, not from above. Apply preventive spray before rains."
+    },
+    {
+        "name": "Apple___Black_rot",
+        "cause": "Caused by the fungus Botryosphaeria obtusa.",
+        "cure": "Prune and remove infected areas. Apply fungicides during the growing season.",
+        "simple_explanation": "A fungal infection that causes fruits to rot and turn black. It can also damage leaves and branches.",
+        "how_to_spot": "Fruits develop brown spots that turn into soft, black rotten areas. Leaves show purple-bordered spots. Dead branches may appear.",
+        "prevention_tips": "Cut and burn infected branches immediately. Remove mummified fruits from tree. Keep orchard clean. Avoid injuries to tree bark."
+    },
+    {
+        "name": "Apple___Cedar_apple_rust",
+        "cause": "Fungus Gymnosporangium juniperi-virginianae. Requires junipers as an alternate host.",
+        "cure": "Remove nearby juniper hosts. Use resistant varieties and fungicides.",
+        "simple_explanation": "A disease that needs both apple and juniper trees to spread. Creates bright orange or yellow spots on leaves.",
+        "how_to_spot": "Yellow-orange spots appear on upper leaf surface in spring. Small black dots may form in centers of spots. Fruits can also develop spots.",
+        "prevention_tips": "Remove nearby juniper bushes if possible. Choose disease-resistant apple varieties. Apply fungicide in early spring."
+    },
+    {
+        "name": "Apple___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your apple plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and vibrant. No spots, discoloration, or wilting. Normal growth pattern.",
+        "prevention_tips": "Continue regular watering and fertilizing. Prune dead branches. Monitor regularly for any changes. Maintain good spacing between plants."
+    },
+    {
+        "name": "Background_without_leaves",
+        "cause": "No disease or plant detected.",
+        "cure": "Not applicable.",
+        "simple_explanation": "No plant leaf was detected in the image. Please take a clearer photo of the affected leaf.",
+        "how_to_spot": "Image shows background, soil, or unclear plant parts instead of a clear leaf view.",
+        "prevention_tips": "Take photos in good lighting. Focus on a single leaf. Fill 60-80% of frame with the leaf. Avoid shadows and blur."
+    },
+    {
+        "name": "Blueberry___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your blueberry plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and vibrant. No spots, discoloration, or wilting. Normal growth and fruit development.",
+        "prevention_tips": "Maintain acidic soil (pH 4.5-5.5). Water regularly, especially during fruiting. Mulch around plants. Prune old branches annually."
+    },
+    {
+        "name": "Cherry___Powdery_mildew",
+        "cause": "Fungus Podosphaera clandestina.",
+        "cure": "Apply sulfur-based or fungicide treatments. Ensure good air circulation.",
+        "simple_explanation": "A fungal disease that creates a white, powdery coating on leaves and fruits. Looks like flour was sprinkled on the plant.",
+        "how_to_spot": "White powdery patches appear on leaves, shoots, and fruits. Leaves may curl, twist, or become distorted. Growth may slow down.",
+        "prevention_tips": "Plant in sunny, well-ventilated areas. Avoid overhead watering. Remove infected leaves quickly. Space plants properly for airflow."
+    },
+    {
+        "name": "Cherry___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your cherry plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are bright green with no spots. Branches look strong and healthy. Normal flowering and fruiting pattern.",
+        "prevention_tips": "Prune after harvest to maintain shape. Water deeply but infrequently. Protect from birds during fruiting. Monitor for pests regularly."
+    },
+    {
+        "name": "Corn___Cercospora_leaf_spot Gray_leaf_spot",
+        "cause": "Fungus Cercospora zeae-maydis.",
+        "cure": "Use resistant hybrids and fungicide sprays.",
+        "simple_explanation": "A fungal disease that creates gray or brown rectangular spots on corn leaves. Can reduce crop yield significantly.",
+        "how_to_spot": "Long, rectangular gray or brown spots appear between leaf veins. Spots may have yellow edges. Lower leaves are affected first.",
+        "prevention_tips": "Rotate crops yearly - don't plant corn in same field. Remove old crop debris. Plant resistant varieties. Ensure proper spacing."
+    },
+    {
+        "name": "Corn___Common_rust",
+        "cause": "Fungus Puccinia sorghi.",
+        "cure": "Apply fungicides and plant resistant varieties.",
+        "simple_explanation": "A disease that creates rusty-colored bumps on corn leaves. Spreads quickly in cool, humid weather.",
+        "how_to_spot": "Small, circular or oval rust-colored pustules on both sides of leaves. Pustules release rusty powder when rubbed. Leaves turn yellow.",
+        "prevention_tips": "Plant early-maturing varieties. Use resistant hybrid seeds. Apply fungicide if disease is severe. Monitor weather conditions."
+    },
+    {
+        "name": "Corn___Northern_Leaf_Blight",
+        "cause": "Fungus Exserohilum turcicum.",
+        "cure": "Use resistant varieties and fungicides.",
+        "simple_explanation": "A fungal disease that creates long, cigar-shaped spots on corn leaves. Can cause serious yield loss in wet conditions.",
+        "how_to_spot": "Long, elliptical gray-green spots that turn tan. Spots can be 1-6 inches long. Entire leaves may die. Starts on lower leaves first.",
+        "prevention_tips": "Choose resistant corn hybrids. Bury crop residue after harvest. Rotate with non-host crops. Plant early to avoid peak disease period."
+    },
+    {
+        "name": "Corn___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your corn plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and upright. No spots or discoloration. Stalks are strong. Good tassel and ear development.",
+        "prevention_tips": "Maintain proper plant spacing. Provide adequate water, especially during tasseling. Apply balanced fertilizer. Control weeds early."
+    },
+    {
+        "name": "Grape___Black_rot",
+        "cause": "Fungus Guignardia bidwellii.",
+        "cure": "Prune infected areas and apply fungicides.",
+        "simple_explanation": "A fungal disease that turns grapes into hard, black, shriveled 'mummies'. Also affects leaves and shoots.",
+        "how_to_spot": "Small tan spots on leaves that enlarge and turn brown. Grapes develop brown circles, then shrivel into black mummies. Young shoots have dark lesions.",
+        "prevention_tips": "Remove all mummified grapes from vines and ground. Prune for better air circulation. Apply fungicide before bloom and after rain."
+    },
+    {
+        "name": "Grape___Esca_(Black_Measles)",
+        "cause": "Fungal complex including Phaeomoniella chlamydospora.",
+        "cure": "Remove infected wood. Avoid injuries to vines.",
+        "simple_explanation": "A serious trunk disease that weakens grapevines over time. Causes leaves to show a 'tiger-stripe' pattern and fruits to shrivel.",
+        "how_to_spot": "Leaves show yellow stripes between veins (tiger-stripe pattern). Dark streaks inside wood when cut. Grapes may have dark spots and shrivel. Sudden vine collapse possible.",
+        "prevention_tips": "Prevent pruning wounds during wet weather. Use clean, sanitized pruning tools. Avoid large cuts. Remove severely infected vines completely."
+    },
+    {
+        "name": "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)",
+        "cause": "Fungus Pseudocercospora vitis.",
+        "cure": "Apply fungicides and manage vineyard hygiene.",
+        "simple_explanation": "A leaf disease that creates brown spots surrounded by yellow halos. Can cause early leaf drop and weaken the vine.",
+        "how_to_spot": "Circular brown spots with yellow halos on leaves. Spots may merge and form large brown patches. Leaves turn yellow and fall early.",
+        "prevention_tips": "Remove fallen leaves from vineyard. Ensure good air circulation through proper pruning. Apply preventive fungicide during wet periods."
+    },
+    {
+        "name": "Grape___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your grapevine is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and fully developed. No spots, stripes, or discoloration. Grapes developing normally. Good vine vigor.",
+        "prevention_tips": "Prune annually for air circulation. Train vines on proper support system. Water at base, not overhead. Monitor regularly during growing season."
+    },
+    {
+        "name": "Orange___Haunglongbing_(Citrus_greening)",
+        "cause": "Bacterium Candidatus Liberibacter spp. Spread by psyllid insects.",
+        "cure": "Control psyllid population and remove infected trees.",
+        "simple_explanation": "A very serious bacterial disease spread by tiny insects. Makes fruits turn green and bitter. Eventually kills the tree.",
+        "how_to_spot": "Leaves show yellow blotches (not symmetrical). Fruits stay partially green, taste bitter. Fruits may be lopsided. Tree shows stunted growth and twig dieback.",
+        "prevention_tips": "Control psyllid insects with approved pesticides. Use disease-free nursery plants. Remove infected trees immediately to protect others. Monitor trees weekly."
+    },
+    {
+        "name": "Peach___Bacterial_spot",
+        "cause": "Bacterium Xanthomonas campestris pv. pruni.",
+        "cure": "Use resistant varieties and copper-based bactericides.",
+        "simple_explanation": "A bacterial infection that creates dark spots on leaves and fruits. Can cause severe fruit damage and leaf drop.",
+        "how_to_spot": "Small, dark purple to black spots on leaves. Spots may have yellow halos. Fruits develop brown, sunken spots. Leaves may have holes where spots fell out.",
+        "prevention_tips": "Plant resistant varieties. Avoid overhead irrigation. Apply copper spray during dormant season. Don't work in orchard when plants are wet."
+    },
+    {
+        "name": "Peach___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your peach tree is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green with no spots. Fruits developing with good color. No gummosis (sap oozing). Good growth and branching.",
+        "prevention_tips": "Prune in late winter for shape and airflow. Thin fruits for better size and quality. Water deeply but infrequently. Fertilize in early spring."
+    },
+    {
+        "name": "Pepper,_bell___Bacterial_spot",
+        "cause": "Bacterium Xanthomonas campestris pv. vesicatoria.",
+        "cure": "Use copper-based bactericides and resistant varieties.",
+        "simple_explanation": "A bacterial disease that creates dark, greasy-looking spots on pepper leaves and fruits. Spreads quickly in warm, wet weather.",
+        "how_to_spot": "Small, dark green water-soaked spots on leaves that turn brown. Fruits develop raised brown spots with white halos. Leaves may turn yellow and drop.",
+        "prevention_tips": "Use certified disease-free seeds. Avoid overhead watering. Don't touch plants when wet. Rotate crops - don't plant peppers in same spot yearly."
+    },
+    {
+        "name": "Pepper,_bell___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your pepper plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are dark green and glossy. No spots or wilting. Flowers forming normally. Fruits developing with good color and shape.",
+        "prevention_tips": "Water at soil level, not on leaves. Stake plants for support. Remove weeds regularly. Harvest fruits when fully developed to encourage more production."
+    },
+    {
+        "name": "Potato___Early_blight",
+        "cause": "Fungus Alternaria solani.",
+        "cure": "Apply fungicides and practice crop rotation.",
+        "simple_explanation": "A common fungal disease that creates brown spots with rings on leaves, like a target or bull's-eye. Can reduce potato yield.",
+        "how_to_spot": "Brown spots with concentric rings (target pattern) on older leaves. Leaves turn yellow around spots. Dark, sunken spots may appear on tubers.",
+        "prevention_tips": "Rotate potatoes with non-related crops. Remove volunteer potato plants. Water at base, not overhead. Hill soil around stems to protect tubers."
+    },
+    {
+        "name": "Potato___Late_blight",
+        "cause": "Pathogen Phytophthora infestans.",
+        "cure": "Use resistant varieties and fungicides.",
+        "simple_explanation": "A very serious disease that can destroy entire potato crop quickly. Famous for causing the Irish Potato Famine. Spreads fast in cool, wet weather.",
+        "how_to_spot": "Water-soaked spots on leaves that turn brown-black. White fuzzy growth on leaf undersides. Stems may have dark streaks. Tubers develop brown, corky rot.",
+        "prevention_tips": "Use certified disease-free seed potatoes. Plant resistant varieties. Apply preventive fungicide before symptoms appear. Destroy infected plants immediately."
+    },
+    {
+        "name": "Potato___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your potato plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are vibrant green. No spots, wilting, or yellowing. Strong stems and good growth. Plants standing upright.",
+        "prevention_tips": "Hill soil around plants as they grow. Water consistently, especially during tuber formation. Monitor for Colorado potato beetles. Harvest when tops die back."
+    },
+    {
+        "name": "Raspberry___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your raspberry plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green with no spots. Canes are firm and upright. Good fruit production. No wilting or dieback.",
+        "prevention_tips": "Remove old fruiting canes after harvest. Thin new canes for better air circulation. Mulch around plants. Provide support with stakes or wires."
+    },
+    {
+        "name": "Soybean___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your soybean plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and trifoliate (three leaflets). No spots or yellowing. Good pod development. Plants standing well.",
+        "prevention_tips": "Rotate with corn or wheat. Use certified seeds. Maintain proper plant spacing. Control weeds early. Monitor for insect pests."
+    },
+    {
+        "name": "Squash___Powdery_mildew",
+        "cause": "Fungal pathogens including Erysiphe cichoracearum.",
+        "cure": "Apply sulfur-based fungicides and maintain good air circulation.",
+        "simple_explanation": "A fungal disease that covers leaves with white powdery coating, like they've been dusted with flour. Common in warm, dry days and cool nights.",
+        "how_to_spot": "White powdery spots on upper leaf surfaces. Spots merge to cover entire leaf. Leaves may yellow, curl, and die. Fruits may not develop properly.",
+        "prevention_tips": "Space plants well for air flow. Water at soil level in morning. Remove infected leaves promptly. Spray milk solution (1:10 milk to water) weekly."
+    },
+    {
+        "name": "Strawberry___Leaf_scorch",
+        "cause": "Fungus Diplocarpon earlianum.",
+        "cure": "Remove infected leaves and apply fungicides.",
+        "simple_explanation": "A fungal disease that makes strawberry leaves look scorched or burned. Can weaken plants and reduce fruit production.",
+        "how_to_spot": "Irregular purple to brown spots on leaves. Spots may have gray centers. Severely infected leaves look scorched and die. Older leaves affected first.",
+        "prevention_tips": "Remove old leaves after harvest. Use drip irrigation instead of sprinklers. Plant resistant varieties. Mulch around plants to prevent soil splash."
+    },
+    {
+        "name": "Strawberry___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your strawberry plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are green and bright. No spots or discoloration. Flowers blooming well. Fruits developing with good color.",
+        "prevention_tips": "Mulch with straw to keep fruits clean. Remove runners if not needed. Water regularly, especially during fruiting. Fertilize after harvest."
+    },
+    {
+        "name": "Tomato___Bacterial_spot",
+        "cause": "Bacterium Xanthomonas spp.",
+        "cure": "Apply copper-based bactericides and practice crop rotation.",
+        "simple_explanation": "A bacterial disease that creates small, dark spots on tomato leaves and fruits. Spreads rapidly through water splash and handling.",
+        "how_to_spot": "Small, dark brown to black spots on leaves with yellow halos. Fruits develop raised brown spots. Leaves may turn yellow and fall. Spots feel rough.",
+        "prevention_tips": "Use disease-free seeds and transplants. Avoid working with plants when wet. Water at soil level only. Rotate tomatoes with non-related crops yearly."
+    },
+    {
+        "name": "Tomato___Early_blight",
+        "cause": "Fungus Alternaria solani.",
+        "cure": "Apply fungicides and remove infected leaves.",
+        "simple_explanation": "A common fungal disease that creates brown spots with ring patterns on older leaves. Can spread to fruits and reduce yield.",
+        "how_to_spot": "Brown spots with concentric circles (like a target) on lower, older leaves first. Leaves yellow around spots and fall off. Dark sunken spots on fruits near stem.",
+        "prevention_tips": "Mulch around plants to prevent soil splash. Remove lower leaves that touch ground. Water at base in morning. Space plants for good air flow."
+    },
+    {
+        "name": "Tomato___Late_blight",
+        "cause": "Pathogen Phytophthora infestans.",
+        "cure": "Use resistant varieties and fungicides.",
+        "simple_explanation": "A devastating disease that can kill entire tomato plants in days. Same disease that caused Irish Potato Famine. Loves cool, wet weather.",
+        "how_to_spot": "Gray-green water-soaked spots on leaves that turn brown-black quickly. White fuzzy mold on leaf undersides. Stems have dark streaks. Fruits develop greasy brown rot.",
+        "prevention_tips": "Plant resistant varieties when possible. Apply preventive fungicide before rain. Remove infected plants immediately. Don't plant near potatoes."
+    },
+    {
+        "name": "Tomato___Leaf_Mold",
+        "cause": "Fungus Passalora fulva.",
+        "cure": "Apply fungicides and ensure good ventilation.",
+        "simple_explanation": "A fungal disease common in greenhouses and humid areas. Creates yellow spots on top of leaves and fuzzy mold underneath.",
+        "how_to_spot": "Pale green or yellow spots on upper leaf surface. Olive-gray to brown fuzzy mold on leaf undersides. Older leaves affected first. No fruit spots usually.",
+        "prevention_tips": "Improve air circulation - use fans in greenhouses. Don't overcrowd plants. Water in morning. Keep humidity below 85%. Remove infected leaves promptly."
+    },
+    {
+        "name": "Tomato___Septoria_leaf_spot",
+        "cause": "Fungus Septoria lycopersici.",
+        "cure": "Remove infected leaves and apply fungicides.",
+        "simple_explanation": "A fungal disease that creates many small spots with dark borders on leaves. Can cause severe leaf loss if not controlled.",
+        "how_to_spot": "Numerous small, circular spots with gray centers and dark brown borders. Tiny black dots (spores) visible in spot centers. Lower leaves affected first.",
+        "prevention_tips": "Mulch heavily to prevent soil splash. Remove infected leaves immediately. Stake or cage plants off ground. Avoid overhead watering after transplanting."
+    },
+    {
+        "name": "Tomato___Spider_mites Two-spotted_spider_mite",
+        "cause": "Spider mites Tetranychus urticae.",
+        "cure": "Use miticides or insecticidal soaps.",
+        "simple_explanation": "Tiny spider-like pests (almost invisible) that suck plant juices. Create fine webbing on leaves. Thrive in hot, dry conditions.",
+        "how_to_spot": "Tiny yellow or white speckles on leaves. Fine webbing on undersides of leaves. Leaves turn bronze, curl, and drop. Mites look like moving dots.",
+        "prevention_tips": "Spray plants with strong water stream regularly. Keep plants well-watered - mites love drought stress. Introduce predatory mites. Avoid dusty conditions."
+    },
+    {
+        "name": "Tomato___Target_Spot",
+        "cause": "Fungus Corynespora cassiicola.",
+        "cure": "Apply fungicides and ensure good air circulation.",
+        "simple_explanation": "A fungal disease that makes brown spots with target-like rings on leaves. Similar to early blight but spots are more circular.",
+        "how_to_spot": "Brown circular spots with concentric rings on leaves. Spots have yellow halos. Affects leaves at all levels (not just bottom). Fruits may have dark sunken spots.",
+        "prevention_tips": "Space plants well apart. Remove lower leaves to improve airflow. Apply mulch to reduce soil splash. Rotate crops yearly. Water in early morning."
+    },
+    {
+        "name": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
+        "cause": "Virus spread by whiteflies.",
+        "cure": "Control whitefly population and use resistant varieties.",
+        "simple_explanation": "A viral disease spread by tiny whitefly insects. Makes leaves curl upward, turn yellow, and stops fruit production. Cannot be cured.",
+        "how_to_spot": "Leaves curl upward and edges roll inward. Leaves turn yellow progressively. Plant becomes stunted and bushy. Flowers drop. Few or no fruits form.",
+        "prevention_tips": "Use reflective mulches to repel whiteflies. Cover young plants with fine mesh. Plant resistant varieties. Remove infected plants immediately. Control weeds."
+    },
+    {
+        "name": "Tomato___Tomato_mosaic_virus",
+        "cause": "Virus transmitted through contact and contaminated tools.",
+        "cure": "Remove infected plants and sterilize tools.",
+        "simple_explanation": "A highly contagious virus that creates mottled, mosaic-like patterns on leaves. Spreads through touch, tools, and even cigarette smoke.",
+        "how_to_spot": "Light and dark green mottled pattern on leaves. Leaves may be distorted or fern-like. Fruits show yellow blotches and brown streaks inside. Stunted growth.",
+        "prevention_tips": "Wash hands before working with plants. Sterilize tools with bleach solution. Don't smoke near tomatoes. Use resistant varieties. Remove infected plants in plastic bag."
+    },
+    {
+        "name": "Tomato___healthy",
+        "cause": "No disease present.",
+        "cure": "Maintain good cultural practices for optimal health.",
+        "simple_explanation": "Your tomato plant is healthy! No disease detected.",
+        "how_to_spot": "Leaves are vibrant green with no spots. Strong stems. Good flower clusters. Fruits developing normally with good color.",
+        "prevention_tips": "Stake or cage for support. Prune suckers for better air flow. Water deeply 1-2 times weekly. Fertilize every 2-3 weeks. Harvest ripe fruits promptly."
+    }
+]

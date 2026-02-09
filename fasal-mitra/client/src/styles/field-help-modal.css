@@ -288,10 +288,17 @@
 /* Input Container */
 .field-help-input-container {
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     padding: 1rem;
     background: white;
     border-top: 1px solid var(--color-border, #e5e7eb);
+}
+
+.field-help-input-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .field-help-input {
@@ -311,6 +318,29 @@
 .field-help-input:disabled {
     background: var(--color-surface, #FAF1E6);
     cursor: not-allowed;
+}
+
+.voice-output-btn {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    color: var(--color-text-secondary, #6b7280);
+}
+
+.voice-output-btn:hover {
+    background: var(--color-surface, #FAF1E6);
+    color: var(--color-primary, #99BC85);
+}
+
+.voice-output-btn.active {
+    background: var(--color-primary-light, #E4EFE7);
+    color: var(--color-primary, #99BC85);
 }
 
 .field-help-send-btn {

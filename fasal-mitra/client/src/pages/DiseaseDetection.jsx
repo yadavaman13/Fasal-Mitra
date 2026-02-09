@@ -45,6 +45,13 @@ const DiseaseDetection = () => {
                 ? `${baseUrl}/api/v1/disease/diseases?crop_type=${encodeURIComponent(filterCrop)}`
                 : `${baseUrl}/api/v1/disease/diseases`;
             
+            // Add timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            const response = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            
             const response = await fetch(url);
             const data = await response.json();
             
@@ -53,6 +60,9 @@ const DiseaseDetection = () => {
             }
         } catch (err) {
             console.error('Failed to fetch diseases:', err);
+            if (err.name === 'AbortError' || err.message.includes('Failed to fetch')) {
+                console.warn('Backend server may not be running. Start it with: cd fasal-mitra/server && python run.py');
+            }
         }
     };
 
@@ -79,6 +89,19 @@ const DiseaseDetection = () => {
                 formData.append('location', location);
             }
 
+            // Add timeout to prevent hanging forever
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
+            const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+            const response = await fetch(`${baseUrl}/api/v1/disease/detect`, {
+                method: 'POST',
+                body: formData,
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
             const baseUrl = (import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '');
             const response = await fetch(`${baseUrl}/api/v1/disease/detect`, {
                 method: 'POST',
@@ -93,6 +116,13 @@ const DiseaseDetection = () => {
                 setError(data.message || 'Detection failed');
             }
         } catch (err) {
+            if (err.name === 'AbortError') {
+                setError('Request timed out. Please ensure the backend server is running at http://localhost:8000');
+            } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+                setError('Cannot connect to server. Please start the backend server: cd fasal-mitra/server && python run.py');
+            } else {
+                setError('Failed to detect disease. Please try again.');
+            }
             setError('Failed to detect disease. Please try again.');
             console.error('Detection error:', err);
         } finally {
@@ -202,6 +232,10 @@ const DiseaseDetection = () => {
                     </div>
                 ) : activeTab === 'detect' ? (
                     <div className="disease-detection-content">
+                        <div className="detection-layout" style={{ display: 'block' }}>
+                            {/* Full Width - Image Upload */}
+                            <div className="detection-image-section" style={{ width: '100%' }}>
+                                <div className="input-card" style={{ width: '100%', maxWidth: 'none' }}>
                         <div className="detection-layout">
                             {/* Left Column - Image Upload (50%) */}
                             <div className="detection-image-section">
@@ -211,6 +245,44 @@ const DiseaseDetection = () => {
                                         onImageSelect={handleImageSelect}
                                         selectedImage={selectedImage}
                                     />
+
+                                    {/* Action Buttons */}
+                                    <div className="mt-6 space-y-4">
+                                        <div className="action-buttons">
+                                            <button
+                                                onClick={handleDetectDisease}
+                                                disabled={!selectedImage || isDetecting}
+                                                className="detect-button"
+                                            >
+                                                {isDetecting ? (
+                                                    <>
+                                                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                        Analyzing...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Bug className="w-4 h-4 mr-2" />
+                                                        Detect Disease
+                                                    </>
+                                                )}
+                                            </button>
+
+                                            <button
+                                                onClick={handleReset}
+                                                className="reset-button"
+                                            >
+                                                Reset
+                                            </button>
+                                        </div>
+
+                                        {/* Error Display */}
+                                        {error && (
+                                            <div className="error-message">
+                                                <AlertCircle className="w-4 h-4 mr-2" />
+                                                {error}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -288,6 +360,9 @@ const DiseaseDetection = () => {
                             </div>
                         </div>
 
+                        {/* Full Width - Results Section */}
+                        <div className="detection-results-section" style={{ width: '100%', margin: '2rem 0 0' }}>
+                            {detectionResult ? (
                             {/* Right Column - Results Section */}
                             <div className="detection-results-section">
                                 {detectionResult ? (
@@ -324,6 +399,7 @@ const DiseaseDetection = () => {
                                     </div>
                                 )}
                             </div>
+                    </div>
                         </div>
                 ) : (
                     <DiseaseList 
