@@ -767,7 +767,7 @@ const CropPlanning = () => {
                             ) : null}
 
                             {/* Performance Metrics (Optional) */}
-                            {cropReview && (
+                            {/* {cropReview && (
                                 <div className="review-section">
                                     <h4 className="section-heading">📊 Performance Metrics</h4>
                                     <div className="metrics-grid">
@@ -798,7 +798,7 @@ const CropPlanning = () => {
                                         )}
                                     </div>
                                 </div>
-                            )}
+                            )} */}
 
                             {cropReview?.reliability && (
                                 <div className="review-footer">

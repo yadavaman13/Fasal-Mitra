@@ -15,6 +15,38 @@ router = APIRouter()
 # Lazy load Gemini client
 _genai_client = None
 
+
+def generate_fallback_analysis(crop: str, state: str, season: str, month: str) -> str:
+    """Generate a fallback analysis when API quota is exceeded"""
+    return f"""**1. Suitability Analysis:**
+{crop.title()} is commonly cultivated in {state} during the {season} season. The {month} timing is generally favorable for this crop in the region. Consider local soil conditions and water availability before proceeding.
+
+**2. Key Benefits:**
+- Well-suited to the local climate and soil conditions of {state}
+- Good market demand during this growing season
+- Established cultivation practices available from local agricultural experts
+
+**3. Important Risks & Challenges:**
+- Weather variability may affect crop yield - maintain weather monitoring
+- Pest and disease pressure during {season} - implement integrated pest management
+- Water management is critical - ensure adequate irrigation facilities
+
+**4. Recommendations:**
+- Consult with local agricultural extension officers for region-specific advice
+- Use certified seeds from reliable sources for better germination
+- Implement soil testing to determine fertilizer requirements
+- Plan for proper drainage and irrigation based on {season} rainfall patterns
+
+**5. Expected Timeline:**
+Typical {crop.title()} cultivation cycle for {season} season:
+- Land preparation: 2-3 weeks before sowing
+- Sowing period: Early {month}
+- Growth phase: 60-90 days depending on variety
+- Harvest: Varies by crop variety and local conditions
+
+*Note: This is general guidance. For detailed AI-powered analysis, please try again later when service is available.*"""
+
+
 def get_genai_client():
     global _genai_client
     if _genai_client is None and settings.GEMINI_API_KEY:
@@ -116,10 +148,32 @@ Keep the language simple and easy to understand for farmers. Use shorter sentenc
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error generating AI analysis: {str(e)}")
+        error_str = str(e)
+        logger.error(f"Error generating AI analysis: {error_str}")
+        
+        # Handle quota exhausted errors - use fallback response
+        if "RESOURCE_EXHAUSTED" in error_str or "429" in error_str:
+            logger.warning("API quota exceeded, using fallback analysis")
+            fallback_text = generate_fallback_analysis(
+                request.crop,
+                request.state,
+                request.season,
+                request.month_name
+            )
+            return ResponseModel(
+                success=True,
+                message="AI analysis generated (fallback mode)",
+                data={
+                    "analysis": fallback_text,
+                    "crop": request.crop,
+                    "location": f"{request.state}, {request.country or 'India'}",
+                    "fallback": True
+                }
+            )
+        
         raise HTTPException(
             status_code=500,
-            detail=f"Failed to generate AI analysis: {str(e)}"
+            detail=f"Failed to generate AI analysis: {error_str}"
         )
 
 
