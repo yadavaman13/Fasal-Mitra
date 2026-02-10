@@ -31,11 +31,132 @@ logger = logging.getLogger(__name__)
 class ChatbotService:
     """AI-powered farming chatbot service"""
     
+    # Counter-question triggers - questions that need more details from farmer
+    COUNTER_QUESTION_TRIGGERS = {
+        'yield': {
+            'patterns': ['calculate yield', 'estimate yield', 'predict yield', 'yield of my farm', 
+                        'how much yield', 'expected yield', 'yield calculation', 'mera yield',
+                        'पैदावार', 'उपज', 'ઉપજ', 'விளைச்சல்'],
+            'response': """To calculate your farm's yield accurately, I need some details:
+
+**Please provide:**
+• 🌾 **Crop name**: What crop are you growing?
+• 📏 **Farm area**: What is your farm size (in acres or hectares)?
+• 📍 **Location**: Which district/state is your farm in?
+• 🌱 **Soil type**: Sandy, loamy, clayey, or black soil?
+• 💧 **Irrigation**: Rainfed, drip, sprinkler, or flood irrigation?
+• 📅 **Sowing date**: When did you sow the crop?
+
+Share these details and I'll help estimate your yield! 🌾"""
+        },
+        'fertilizer': {
+            'patterns': ['fertilizer dose', 'how much fertilizer', 'fertilizer for my', 
+                        'fertilizer calculation', 'fertilizer requirement', 'which fertilizer',
+                        'खाद', 'उर्वरक', 'ખાતર', 'உரம்'],
+            'response': """To recommend the right fertilizer amount, I need:
+
+**Please share:**
+• 🌱 **Crop name**: What are you growing?
+• 📏 **Farm area**: How big is your field (acres/hectares)?
+• 🧪 **Soil pH**: Do you know your soil pH level? (If not, that's okay)
+• 🌿 **Growth stage**: Seedling, vegetative, flowering, or maturity?
+• 🔄 **Previous crop**: What did you grow last season?
+• 💧 **Irrigation type**: How do you water your crops?
+
+With these details, I'll give you precise fertilizer recommendations! 🌿"""
+        },
+        'irrigation': {
+            'patterns': ['water requirement', 'how much water', 'irrigation schedule', 
+                        'when to water', 'watering my', 'irrigation for',
+                        'पानी', 'सिंचाई', 'પાણી', 'நீர்'],
+            'response': """For proper irrigation guidance, please tell me:
+
+**I need to know:**
+• 🌱 **Crop name**: What crop are you growing?
+• 🏜️ **Soil type**: Sandy, loamy, or clayey?
+• ☀️ **Current weather**: Is it hot, humid, or dry in your area?
+• 🌿 **Growth stage**: Seedling, flowering, or maturity?
+• 💧 **Current method**: Drip, sprinkler, flood, or rainfed?
+• 📍 **Location**: Your district/state?
+
+Share these and I'll create a perfect watering schedule for you! 💧"""
+        },
+        'pesticide': {
+            'patterns': ['which pesticide', 'spray for', 'pest control', 'insect attack', 
+                        'disease treatment', 'pest on my', 'insects eating',
+                        'कीटनाशक', 'दवाई', 'જંતુનાશક', 'பூச்சிக்கொல்லி'],
+            'response': """To recommend the right treatment, I need:
+
+**Please describe:**
+• 🌱 **Crop name**: Which crop is affected?
+• 🔍 **Symptoms**: What do you see? (spots, wilting, holes, insects?)
+• 📊 **Affected area**: How much of the field is affected? (%, or area)
+• 🌿 **Crop stage**: Seedling, vegetative, flowering, or fruiting?
+• 💊 **Previous treatment**: Have you tried anything already?
+• 📷 **Photo**: Can you describe the pest/disease appearance?
+
+Share details or describe symptoms clearly for accurate advice! 🔬"""
+        },
+        'seed': {
+            'patterns': ['how much seed', 'seed rate', 'seed quantity', 'seeds needed', 
+                        'seed calculation', 'बीज', 'બીજ', 'விதை'],
+            'response': """To calculate seed requirement, please share:
+
+**I need:**
+• 🌱 **Crop name**: What do you want to plant?
+• 📏 **Farm area**: What is your field size?
+• 🌾 **Planting method**: Broadcast, line sowing, or transplanting?
+• 🏷️ **Variety**: Which seed variety (if known)?
+• 📐 **Spacing**: What row/plant spacing will you use?
+
+I'll calculate the exact seed quantity you need! 🌱"""
+        },
+        'profit': {
+            'patterns': ['profit calculation', 'how much profit', 'calculate profit', 
+                        'income from', 'earnings from', 'cost benefit',
+                        'मुनाफा', 'लाभ', 'નફો', 'லாபம்'],
+            'response': """To estimate your profit, I need:
+
+**Please provide:**
+• 🌾 **Crop name**: What are you growing?
+• 📏 **Farm area**: How big is your field?
+• 💰 **Input costs**: Approximate expenses for seeds, fertilizers, labor, irrigation?
+• 📊 **Expected yield**: What yield do you expect (quintal/acre)?
+• 🏪 **Market price**: Current selling price in your area (₹/quintal)?
+
+Share these for a detailed profit analysis! 💰"""
+        },
+        'weather': {
+            'patterns': ['weather for my', 'rain forecast', 'when will it rain', 
+                        'weather in my area', 'मौसम', 'હવામાન', 'வானிலை'],
+            'response': """For accurate weather information, please tell me:
+
+**I need:**
+• 📍 **Location**: Your district and state?
+• 🌾 **Crop (optional)**: What are you growing? (for crop-specific advice)
+• 📅 **Planning for**: Next few days or seasonal forecast?
+
+Share your location and I'll provide weather updates! ☀️🌧️"""
+        }
+    }
+    
     def __init__(self):
         self.enabled = False
         self.model = None
         self.last_request_time = None
         self.min_request_interval = 2  # seconds between requests
+        self.response_cache = {}  # Cache for consistent responses
+        self.cache_max_size = 200  # Maximum cache entries
+        
+        # Generation config for consistent responses (temperature=0 = deterministic)
+        self.generation_config = None
+        if GEMINI_AVAILABLE:
+            self.generation_config = genai.types.GenerationConfig(
+                temperature=0,  # Zero temperature for deterministic/consistent responses
+                top_p=1,
+                top_k=1,
+                max_output_tokens=800
+            )
         
         # Initialize Gemini if available
         if GEMINI_AVAILABLE and settings.GEMINI_API_KEY:
@@ -44,37 +165,114 @@ class ChatbotService:
                 # Using Gemini Flash Latest (best balance of speed and quota)
                 self.model = genai.GenerativeModel('gemini-flash-latest')
                 self.enabled = True
-                logger.info("✅ Gemini API configured successfully with gemini-flash-latest")
+                logger.info("✅ Gemini API configured successfully with gemini-flash-latest (temperature=0 for consistency)")
             except Exception as e:
                 logger.error(f"Error configuring Gemini API: {str(e)}")
                 self.enabled = False
         else:
             logger.warning("Chatbot disabled - Gemini API key not configured")
     
+    def _check_counter_question(self, question: str) -> Optional[str]:
+        """Check if the question requires counter-questions for more details"""
+        question_lower = question.lower()
+        
+        for trigger_type, trigger_data in self.COUNTER_QUESTION_TRIGGERS.items():
+            for pattern in trigger_data['patterns']:
+                if pattern.lower() in question_lower:
+                    logger.info(f"Counter-question triggered for: {trigger_type}")
+                    return trigger_data['response']
+        
+        return None
+    
+    def _get_cache_key(self, question: str, language: str) -> str:
+        """Generate cache key from question and language"""
+        # Normalize the question for caching
+        normalized = question.lower().strip()
+        return f"{language}:{normalized}"
+    
+    def _get_cached_response(self, cache_key: str) -> Optional[str]:
+        """Get cached response if available"""
+        if cache_key in self.response_cache:
+            logger.info(f"Cache hit for question")
+            return self.response_cache[cache_key]
+        return None
+    
+    def _cache_response(self, cache_key: str, response: str):
+        """Cache a response for future use"""
+        # Limit cache size
+        if len(self.response_cache) >= self.cache_max_size:
+            # Remove oldest entries (first 20%)
+            keys_to_remove = list(self.response_cache.keys())[:int(self.cache_max_size * 0.2)]
+            for key in keys_to_remove:
+                del self.response_cache[key]
+        
+        self.response_cache[cache_key] = response
+    
     async def ask_question(self, request: ChatbotQueryRequest) -> Dict:
-        """Answer a farming question"""
+        """Answer a farming question with consistent responses and interactive counter-questions"""
         
         if not self.enabled:
             return self._fallback_response(request.question)
         
         try:
-            # Rate limiting
+            # Step 1: Check if this question needs counter-questions for more details
+            counter_question = self._check_counter_question(request.question)
+            if counter_question:
+                return {
+                    "response_id": str(uuid.uuid4()),
+                    "timestamp": datetime.now(),
+                    "question": request.question,
+                    "answer": counter_question,
+                    "language": request.language,
+                    "confidence": 1.0,  # High confidence for predefined responses
+                    "related_topics": [],
+                    "sources": ["FasalMitra Interactive Assistant"],
+                    "session_id": request.session_id,
+                    "requires_input": True  # Flag indicating we need more info
+                }
+            
+            # Step 2: Check cache for consistent responses to same questions
+            cache_key = self._get_cache_key(request.question, request.language)
+            cached_answer = self._get_cached_response(cache_key)
+            
+            if cached_answer:
+                return {
+                    "response_id": str(uuid.uuid4()),
+                    "timestamp": datetime.now(),
+                    "question": request.question,
+                    "answer": cached_answer,
+                    "language": request.language,
+                    "confidence": 0.95,  # Higher confidence for cached responses
+                    "related_topics": self._extract_related_topics(cached_answer),
+                    "sources": ["AI-Generated", "Cached Response"],
+                    "session_id": request.session_id
+                }
+            
+            # Step 3: Rate limiting before API call
             self._wait_for_rate_limit()
             
-            # Create context-aware prompt
+            # Step 4: Create context-aware prompt
             prompt = self._create_question_prompt(request)
             
-            # Generate response
-            response = self.model.generate_content(prompt)
+            # Step 5: Generate response with temperature=0 for consistency
+            response = self.model.generate_content(
+                prompt,
+                generation_config=self.generation_config
+            )
+            
+            answer_text = response.text
+            
+            # Step 6: Cache the response for future consistency
+            self._cache_response(cache_key, answer_text)
             
             result = {
                 "response_id": str(uuid.uuid4()),
                 "timestamp": datetime.now(),
                 "question": request.question,
-                "answer": response.text,
+                "answer": answer_text,
                 "language": request.language,
                 "confidence": 0.85,
-                "related_topics": self._extract_related_topics(response.text),
+                "related_topics": self._extract_related_topics(answer_text),
                 "sources": ["AI-Generated", "Agricultural Knowledge Base"],
                 "session_id": request.session_id
             }
@@ -159,46 +357,69 @@ USER QUESTION: {request.question}
 CONTEXT: {request.context or 'General farming inquiry'}
 
 CRITICAL RESPONSE GUIDELINES:
-1. **BE CONCISE**: Keep responses SHORT (max 150 words) and focused on KEY POINTS only
-2. **STRUCTURE WELL**: Use this format:
+
+1. **BE INTERACTIVE & HELPFUL**:
+   - If the question is VAGUE or needs SPECIFIC data (like calculations), ASK for details first
+   - For calculation questions (yield, profit, fertilizer dose), ask: "To help you accurately, please share: [list specific parameters needed]"
+   - Always engage like a friendly farming expert who wants to help
+
+2. **WHEN TO ASK CLARIFYING QUESTIONS**:
+   - Yield calculation → Ask for: crop, area, location, soil type, irrigation method
+   - Fertilizer dose → Ask for: crop, area, soil pH, growth stage
+   - Profit estimation → Ask for: crop, area, input costs, expected yield, market price
+   - Disease/pest → Ask for: crop name, symptoms, affected area, photos if possible
+   - Weather advice → Ask for: location, crop being grown
+
+3. **BE CONCISE**: Keep responses SHORT (max 150 words) and focused on KEY POINTS only
+
+4. **STRUCTURE WELL**: Use this format:
    - Start with a brief direct answer (1-2 sentences)
    - Key Points: Use bullet points (•) with emojis for visual clarity
    - Add practical tips if space allows
-   - End with YouTube search hint if relevant (e.g., "🎥 Search: 'organic farming Hindi tutorial'")
+   - End with YouTube search hint if relevant
 
-3. **HANDLE ALL QUESTIONS**:
+5. **HANDLE ALL QUESTIONS**:
    - Farming questions: Give specific, actionable advice
    - Non-farming questions: Politely redirect to farming topics
-   - Unclear questions: Ask for clarification
-   - Greetings: Respond warmly and ask how you can help
+   - Unclear questions: Ask for clarification politely
+   - Greetings: Respond warmly and ask how you can help with farming
 
-4. **MAKE IT PRACTICAL**:
+6. **MAKE IT PRACTICAL**:
    - Mention costs in ₹ if relevant
    - Use simple words farmers understand
    - Focus on Indian farming conditions
    - Include seasonal advice when applicable
 
-5. **YOUTUBE INTEGRATION**:
+7. **YOUTUBE INTEGRATION**:
    - For "how-to" questions, add: "🎥 Watch: 'topic language tutorial'" at the end
    - Suggest specific search terms in user's language
    - Example: "🎥 Search YouTube: 'टमाटर की खेती हिंदी में'"
 
-EXAMPLE GOOD RESPONSE:
-Question: "How to grow tomatoes?"
+EXAMPLE INTERACTIVE RESPONSE:
+Question: "How to calculate profit from my wheat crop?"
+Response: "I'd love to help you calculate your wheat profit! 📊
 
-Tomatoes grow best in well-drained soil with plenty of sunlight.
+To give you an accurate estimate, please share:
+• 📏 **Farm area**: How many acres/hectares?
+• 💰 **Input costs**: Seeds, fertilizers, labor, irrigation (approx ₹)
+• 🌾 **Expected yield**: Quintals per acre you expect?
+• 🏪 **Market price**: Current MSP or local mandi rate?
 
-**Key Steps:**
-• 🌱 Seeds: Start indoors 6-8 weeks before planting
-• 🌞 Location: Full sun (6-8 hours daily)
-• 💧 Water: Regular but not excessive
-• 🌿 Support: Use stakes or cages (₹50-100)
+Share these details and I'll calculate your estimated profit! 💵"
 
-**Quick Tip:** Add compost before planting for better yield.
+EXAMPLE DIRECT RESPONSE:
+Question: "What is NPK?"
+Response: "NPK stands for the three main nutrients in fertilizers:
 
-🎥 Search YouTube: "tomato farming in India" for video tutorials.
+• **N (Nitrogen)**: For leaf growth and green color
+• **P (Phosphorus)**: For root development and flowering
+• **K (Potassium)**: For overall plant health and disease resistance
 
-Remember: CONCISE, STRUCTURED, PRACTICAL. Always stay helpful and friendly!
+**Tip:** A balanced NPK (like 10-10-10) works for most crops. Check your soil test for specific needs!
+
+🎥 Search YouTube: 'NPK fertilizer explained Hindi'"
+
+Remember: BE INTERACTIVE when calculations are needed, DIRECT when giving information. Always stay helpful and friendly!
 """
         return prompt
     
