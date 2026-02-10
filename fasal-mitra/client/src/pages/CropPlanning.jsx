@@ -4,7 +4,7 @@ import {
     Leaf, TrendingUp, TrendingDown, Minus, AlertCircle, CheckCircle,
     Loader, MapPin, Calendar, Maximize2, CloudRain, Thermometer,
     DollarSign, AlertTriangle, Info, Sparkles, Target, ShoppingCart, BarChart3,
-    Droplets, Sprout, Database, Navigation
+    Droplets, Sprout, Database, Navigation, IndianRupee
 } from 'lucide-react';
 import { planCrops, checkCropPlanningHealth, getCropDetails, generateCropAnalysis } from '../services/cropPlanningService';
 import * as soilService from '../services/soilService';
@@ -824,7 +824,7 @@ const CropPlanning = () => {
                                     <div className="crop-header"><div className="crop-title-section"><h3 className="crop-name">{crop.crop_name}</h3><div className={`crop-score ${getScoreClass(crop.final_score)}`}>{crop.final_score}/100</div></div></div>
 
                                     <div className="score-breakdown">
-                                        <div className="score-item"><DollarSign className="score-icon market" /><div className="score-details"><span className="score-label">Market</span><div className="score-value-row"><span className="score-value">{crop.scores?.market || '—'}</span>{getTrendIcon(crop.market_trend)}</div></div></div>
+                                        <div className="score-item"><IndianRupee className="score-icon market" /><div className="score-details"><span className="score-label">Market</span><div className="score-value-row"><span className="score-value">{crop.scores?.market || '—'}</span>{getTrendIcon(crop.market_trend)}</div></div></div>
 
                                         <div className="score-item"><CloudRain className="score-icon weather" /><div className="score-details"><span className="score-label">Weather</span><div className="score-value-row"><span className="score-value">{crop.scores?.weather || '—'}</span>{getWeatherBadge(crop.weather_suitability)}</div></div></div>
 
@@ -836,7 +836,7 @@ const CropPlanning = () => {
                                     </div>
 
                                     <div className="market-info-section">
-                                        {crop.average_market_price_inr > 0 && (<div className="market-price"><DollarSign className="price-icon" /><div className="price-details"><span className="price-label">Avg. Market Price</span><span className="price-value">₹{crop.average_market_price_inr.toLocaleString()}/quintal</span></div></div>)}
+                                        {crop.average_market_price_inr > 0 && (<div className="market-price"><IndianRupee className="price-icon" /><div className="price-details"><span className="price-label">Avg. Market Price</span><span className="price-value">₹{crop.average_market_price_inr.toLocaleString()}/quintal</span></div></div>)}
                                     </div>
 
                                     {expandedCrop === index && marketData[crop.crop_name] && (
