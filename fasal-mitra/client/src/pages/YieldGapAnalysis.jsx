@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { TrendingUp, AlertCircle, Target, BarChart3, Award, Lightbulb, ArrowUp, ArrowDown, Minus } from 'lucide-react';
+import { VoiceSummary } from '../components/voice';
 import '../styles/yield-gap-analysis.css';
 import '../styles/pages.css';
 import { analyzeYieldGap, getCrops, getStates, getSeasons } from '../services/gapAnalysisService';
@@ -301,6 +302,18 @@ const YieldGapAnalysis = () => {
                         <div className="divider-line"></div>
                         <span className="divider-text">{t('yieldGapAnalysis.results', 'Analysis Results')}</span>
                         <div className="divider-line"></div>
+                    </div>
+
+                    {/* Voice Summary - Listen to Results */}
+                    <div className="voice-summary-section">
+                        <VoiceSummary
+                            result={{ ...results, crop: formData.crop, state: formData.state, season: formData.season, analysisMode }}
+                            resultType="yieldGapAnalysis"
+                            title={t('pages:yieldGapAnalysis.listenToSummary', 'Listen to Summary')}
+                            showTitle={true}
+                            compact={false}
+                            className="yield-gap-voice-summary"
+                        />
                     </div>
 
                     {/* Performance Overview */}

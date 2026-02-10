@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Bug, AlertCircle, CheckCircle, Loader2, MessageCircle, ExternalLink } from 'lucide-react';
+import { Bug, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import ImageUpload from '../components/disease/ImageUpload';
 import DetectionResults from '../components/disease/DetectionResults';
 import TreatmentPlan from '../components/disease/TreatmentPlan';
-import FieldHelpIcon from '../components/FieldHelpIcon';
-import FieldHelpModal from '../components/FieldHelpModal';
 import { VoiceSummary } from '../components/voice';
 import '../styles/disease-detection.css';
 import '../styles/pages.css';
@@ -13,18 +11,12 @@ import '../styles/soil-analysis-clean.css';
 
 const DiseaseDetection = () => {
     const { t } = useTranslation(['pages', 'common']);
-    const [activeTab, setActiveTab] = useState('detect');
     const [selectedImage, setSelectedImage] = useState(null);
     const [cropType, setCropType] = useState('Rice');
     const [location, setLocation] = useState('');
     const [isDetecting, setIsDetecting] = useState(false);
     const [detectionResult, setDetectionResult] = useState(null);
     const [error, setError] = useState(null);
-    
-    // Field help modal state
-    const [helpModalOpen, setHelpModalOpen] = useState(false);
-    const [helpFieldLabel, setHelpFieldLabel] = useState('');
-    const [helpFieldName, setHelpFieldName] = useState('');
 
     const cropOptions = [
         'Rice', 'Wheat', 'Cotton', 'Tomato', 'Potato', 'Maize', 'Sugarcane',
@@ -37,7 +29,7 @@ const DiseaseDetection = () => {
         setError(null);
     };
 
-    const handleDetectDisease = async () => {
+    const handleDetect = async () => {
         if (!selectedImage) {
             setError(t('pages:diseaseDetection.pleaseSelectImage'));
             return;
@@ -94,239 +86,123 @@ const DiseaseDetection = () => {
         setError(null);
         setLocation('');
     };
-    
-    // Handle help icon click
-    const handleHelpClick = (fieldName, fieldLabel) => {
-        setHelpFieldName(fieldName);
-        setHelpFieldLabel(fieldLabel);
-        setHelpModalOpen(true);
-    };
 
     return (
-        <div className="page-container">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Header */}
-                <div className="page-header">
-                    <Bug className="page-header-icon" />
-                    <div>
-                        <h1 className="page-header-title">{t('diseaseDetection.title')}</h1>
-                        <p className="page-header-subtitle">{t('diseaseDetection.subtitle')}</p>
+        <div className="disease-detection-app">
+            <div className="detection-container">
+                {/* Minimal Header */}
+                <div className="app-header">
+                    <div className="header-content">
+                        <Bug className="app-icon" />
+                        <h1 className="app-title">Disease Detection</h1>
                     </div>
+                    <p className="app-subtitle">Upload a plant image for instant AI-powered disease analysis</p>
                 </div>
 
-                {/* Tab Navigation */}
-                <div className="disease-tabs mb-8">
-                    <button
-                        className={`tab-button ${activeTab === 'detect' ? 'tab-active' : ''}`}
-                        onClick={() => setActiveTab('detect')}
-                    >
-                        <Bug className="tab-icon" />
-                        Disease Detection
-                    </button>
-
-                    <button
-                        className={`tab-button ${activeTab === 'aiagent' ? 'tab-active' : ''}`}
-                        onClick={() => setActiveTab('aiagent')}
-                    >
-                        <MessageCircle className="tab-icon" />
-                        AI Agent
-                    </button>
-                </div>
-
-                {/* Tab Content */}
-                {activeTab === 'aiagent' ? (
-                    <div className="ai-agent-section">
-                        <div className="ai-agent-card">
-                            <div className="ai-agent-icon">
-                                <MessageCircle className="w-16 h-16" />
-                            </div>
-                            <h2 className="ai-agent-title">Disease Detection AI Agent</h2>
-                            <p className="ai-agent-description">
-                                Get instant disease detection and expert farming advice through our intelligent Telegram bot. 
-                                Available 24/7 to answer your questions, analyze crop images, and provide personalized recommendations.
-                            </p>
-                            
-                            <div className="ai-agent-features">
-                                <div className="feature-item">
-                                    <CheckCircle className="w-5 h-5" />
-                                    <span>Instant image-based disease detection</span>
-                                </div>
-                                <div className="feature-item">
-                                    <CheckCircle className="w-5 h-5" />
-                                    <span>24/7 expert farming assistance</span>
-                                </div>
-                                <div className="feature-item">
-                                    <CheckCircle className="w-5 h-5" />
-                                    <span>Personalized crop recommendations</span>
-                                </div>
-                                <div className="feature-item">
-                                    <CheckCircle className="w-5 h-5" />
-                                    <span>Multi-language support</span>
-                                </div>
-                            </div>
-
-                            <a 
-                                href="https://t.me/fasalmitra_ai_bot" 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="telegram-bot-button"
+                {/* Main Detection Interface */}
+                <div className="detection-interface">
+                    {/* Crop Selection */}
+                    <div className="form-fields">
+                        <div className="form-field">
+                            <label className="field-label">
+                                Select Crop Type
+                            </label>
+                            <select
+                                value={cropType}
+                                onChange={(e) => setCropType(e.target.value)}
+                                className="field-input"
                             >
-                                <MessageCircle className="w-5 h-5" />
-                                <span>Open Telegram Bot</span>
-                                <ExternalLink className="w-4 h-4" />
-                            </a>
-
-                            <div className="ai-agent-note">
-                                <AlertCircle className="w-4 h-4" />
-                                <span>Note: You need Telegram installed on your device to use this service.</span>
-                            </div>
+                                {cropOptions.map(crop => (
+                                    <option key={crop} value={crop}>
+                                        {crop}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
-                ) : (
-                    <div className="disease-detection-content">
-                        <div className="detection-layout">
-                            {/* Left Column - Image Upload (50%) */}
-                            <div className="detection-image-section">
-                                <div className="input-card">
-                                    <h2 className="section-title">Upload Image</h2>
-                                    <ImageUpload
-                                        onImageSelect={handleImageSelect}
-                                        selectedImage={selectedImage}
-                                    />
-                                </div>
-                            </div>
 
-                            {/* Right Column - Form Inputs (50%) */}
-                            <div className="detection-form-section">
-                                <div className="input-card">
-                                    {/* Crop Selection */}
-                                    <div className="form-group">
-                                        <label className="form-label">
-                                            Crop Type
-                                            <FieldHelpIcon 
-                                                fieldName="crop" 
-                                                onClick={() => handleHelpClick('crop', 'Crop Type')} 
-                                            />
-                                        </label>
-                                        <select
-                                            value={cropType}
-                                            onChange={(e) => setCropType(e.target.value)}
-                                            className="field-input"
-                                        >
-                                            {cropOptions.map(crop => (
-                                                <option key={crop} value={crop}>{crop}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                    {/* Upload Section */}
+                    <div className="upload-zone">
+                        <ImageUpload
+                            onImageSelect={handleImageSelect}
+                            selectedImage={selectedImage}
+                        />
+                    </div>
 
-                                    {/* Location (Optional) */}
-                                    <div className="form-group">
-                                        <label className="form-label">Location (Optional)</label>
-                                        <input
-                                            type="text"
-                                            value={location}
-                                            onChange={(e) => setLocation(e.target.value)}
-                                            placeholder={t('pages:diseaseDetection.locationPlaceholder')}
-                                            className="field-input"
-                                        />
-                                    </div>
+                    {/* Action Controls */}
+                    <div className="control-panel">
+                        <button
+                            onClick={handleDetect}
+                            disabled={!selectedImage || isDetecting}
+                            className="detect-button"
+                        >
+                            {isDetecting ? (
+                                <>
+                                    <Loader2 className="spin-icon" />
+                                    <span>Analyzing...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Bug className="button-icon" />
+                                    <span>Detect Disease</span>
+                                </>
+                            )}
+                        </button>
 
-                                    {/* Action Buttons */}
-                                    <div className="action-buttons">
-                                        <button
-                                            onClick={handleDetectDisease}
-                                            disabled={!selectedImage || isDetecting}
-                                            className="analyze-btn"
-                                        >
-                                            {isDetecting ? (
-                                                <>
-                                                    <Loader2 className="btn-icon spin" />
-                                                    Analyzing...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Bug className="btn-icon" />
-                                                    Detect Disease
-                                                </>
-                                            )}
-                                        </button>
+                        {(selectedImage || detectionResult) && (
+                            <button
+                                onClick={handleReset}
+                                className="reset-button"
+                            >
+                                <span>Reset</span>
+                            </button>
+                        )}
+                    </div>
 
-                                        <button
-                                            onClick={handleReset}
-                                            className="reset-btn"
-                                        >
-                                            Reset
-                                        </button>
-                                    </div>
+                    {/* Error Display */}
+                    {error && (
+                        <div className="error-notification">
+                            <AlertCircle className="error-icon" />
+                            <span>{error}</span>
+                        </div>
+                    )}
+                </div>
 
-                                    {/* Error Display */}
-                                    {error && (
-                                        <div className="error-message">
-                                            <AlertCircle className="w-4 h-4 mr-2" />
-                                            {error}
-                                        </div>
-                                    )}
-                                </div>
+                {/* Results Section */}
+                {detectionResult && (
+                    <div className="results-panel">
+                        {/* Results Header */}
+                        <div className="results-header">
+                            <div className="results-title">
+                                <CheckCircle className="results-icon" />
+                                <h2>Analysis Complete</h2>
                             </div>
                         </div>
 
-                        {/* Right Column - Results Section */}
-                        <div className="detection-results-section">
-                                {detectionResult ? (
-                                    <>
-                                        {/* Results Divider */}
-                                        <div className="results-divider">
-                                            <div className="divider-line"></div>
-                                            <span className="divider-text">Analysis Results</span>
-                                            <div className="divider-line"></div>
-                                        </div>
-
-                                        {/* Voice Summary - Listen to Results */}
-                                        <div className="voice-summary-section">
-                                            <VoiceSummary
-                                                result={detectionResult}
-                                                resultType="diseaseDetection"
-                                                title="Listen to Summary"
-                                                showTitle={true}
-                                                compact={false}
-                                                className="disease-voice-summary"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-6">
-                                            <DetectionResults result={detectionResult} />
-                                            <TreatmentPlan 
-                                                treatmentPlan={detectionResult.treatment_plan}
-                                                severity={detectionResult.estimated_severity}
-                                                recommendations={detectionResult.recommendations}
-                                            />
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className="results-placeholder">
-                                        <div className="placeholder-icon">
-                                            <Bug className="w-16 h-16 text-gray-300" />
-                                        </div>
-                                        <h3 className="text-lg font-medium text-gray-500 mb-2">
-                                            No Detection Yet
-                                        </h3>
-                                        <p className="text-gray-400 text-center">
-                                            Upload an image and click "Detect Disease" to see results here
-                                        </p>
-                                    </div>
-                                )}
-                            </div>
+                        {/* Voice Summary */}
+                        <div className="voice-section">
+                            <VoiceSummary
+                                result={detectionResult}
+                                resultType="diseaseDetection"
+                                title="Listen to Summary"
+                                showTitle={true}
+                                compact={false}
+                                className="disease-voice-summary"
+                            />
                         </div>
+
+                        {/* Results Content */}
+                        <div className="results-grid">
+                            <DetectionResults result={detectionResult} />
+                            <TreatmentPlan 
+                                treatmentPlan={detectionResult.treatment_plan}
+                                severity={detectionResult.estimated_severity}
+                                recommendations={detectionResult.recommendations}
+                            />
+                        </div>
+                    </div>
                 )}
             </div>
-            
-            {/* Field Help Modal */}
-            <FieldHelpModal
-                isOpen={helpModalOpen}
-                onClose={() => setHelpModalOpen(false)}
-                fieldLabel={helpFieldLabel}
-                fieldName={helpFieldName}
-            />
         </div>
     );
 };
